@@ -2,11 +2,13 @@
 <resources>
     <style name="Base.Theme.Store" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/my_light_primary</item>
         <item name="android:fontFamily">@font/psb</item>
     </style>
 
     <style name="Theme.AppCompat.Store" parent="Base.Theme.Store">
         <item name="android:fontFamily">@font/psb</item>
     </style>
+
+    <color name="my_light_primary">#3537AD</color>
 </resources>

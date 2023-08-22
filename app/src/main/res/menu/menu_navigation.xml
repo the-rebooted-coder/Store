@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/bhojan"
-        android:title="@string/app_name"
+        android:title="Browse"
         android:icon="@drawable/bhojan_ico"/>
     <item
         android:id="@+id/share"
-        android:title="@string/share"
+        android:title="Store"
         android:icon="@drawable/arrow_ico"/>
 </menu>

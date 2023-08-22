@@ -42,7 +42,7 @@
 
     <ListView
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="40dp"
         android:id="@+id/myListView"
         android:layout_width="150dp"
         android:scrollbars="none"

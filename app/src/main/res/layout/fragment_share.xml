@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
-                android:background="@drawable/button_default"
+                android:textColor="@color/white"
                 android:elevation="30dp"
                 android:fontFamily="@font/productsansbold"
                 android:gravity="center"
