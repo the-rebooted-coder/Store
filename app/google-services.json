@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1074902535935",
+    "project_id": "store-007",
+    "storage_bucket": "store-007.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1074902535935:android:d58c7b0e9655c8cc0646ca",
+        "android_client_info": {
+          "package_name": "com.onesilicondiode.store"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1074902535935-s0cq9va8pbcdi9thh6o5e3rta5mrp0e2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAw1kn8tZOwcbhoQsB9_pA25GvnJCTlCPk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1074902535935-s0cq9va8pbcdi9thh6o5e3rta5mrp0e2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
