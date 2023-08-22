@@ -1,11 +1,11 @@
 package com.onesilicondiode.store;
 
-public class Food {
+public class SecureVaultModel {
     private String key;
     private String imageUrl;
 
 
-    public Food() {
+    public SecureVaultModel() {
     }
 
     public void setImageUrl(String imageUrl) {

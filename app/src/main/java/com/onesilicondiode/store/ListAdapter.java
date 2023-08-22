@@ -24,10 +24,10 @@ import java.util.List;
 
 public class ListAdapter extends ArrayAdapter {
     private final Activity mContext;
-    List<Food> foodList;
+    List<SecureVaultModel> foodList;
     Button moreDetails;
 
-    public ListAdapter(Activity mContext, List<Food> foodList){
+    public ListAdapter(Activity mContext, List<SecureVaultModel> foodList){
         super(mContext,R.layout.list_item,foodList);
         this.mContext = mContext;
         this.foodList = foodList;
@@ -40,7 +40,7 @@ public class ListAdapter extends ArrayAdapter {
         View listItemView = inflater.inflate(R.layout.list_item,null,true);
         moreDetails = listItemView.findViewById(R.id.moreDetails);
         SelectableRoundedImageView foodImage = listItemView.findViewById(R.id.imageLoader);
-        Food food = foodList.get(position);
+        SecureVaultModel food = foodList.get(position);
         String url = food.getImageUrl();
         moreDetails.setOnClickListener(new DoubleClick(new DoubleClickListener() {
             @Override

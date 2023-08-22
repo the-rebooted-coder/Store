@@ -3,7 +3,6 @@ package com.onesilicondiode.store;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -46,7 +44,7 @@ public class HomeFragment extends Fragment {
         }
         if (haveNetwork()) {
             ListView myListView;
-            List<Food> foodList;
+            List<SecureVaultModel> foodList;
             myListView = v3.findViewById(R.id.myListView);
             foodList = new ArrayList<>();
             foodDbAdd.addValueEventListener(new ValueEventListener() {
@@ -56,7 +54,7 @@ public class HomeFragment extends Fragment {
                     try {
                         foodList.clear();
                         for (DataSnapshot foodDatastamp : snapshot.getChildren()) {
-                            Food food = foodDatastamp.getValue(Food.class);
+                            SecureVaultModel food = foodDatastamp.getValue(SecureVaultModel.class);
                             try {
                                 foodList.add(food);
                             } catch (NullPointerException e) {
