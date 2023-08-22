@@ -113,7 +113,7 @@ public class SplashScreen extends AppCompatActivity {
             }, splash_screen_time_out);
         } else {
             //Newbie
-            Intent i = new Intent(SplashScreen.this, Permission.class);
+            Intent i = new Intent(SplashScreen.this, SignUp.class);
             Pair [] pairs = new Pair[1];
             TextView appName = findViewById(R.id.title);
             pairs[0] = new Pair<View, String> (appName,"imageTransition");
