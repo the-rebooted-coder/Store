@@ -119,7 +119,7 @@ public class ShareFragment extends Fragment {
                 final Handler handler = new Handler();
                 handler.postDelayed(() -> vibrateDevice(), 100);
                 vibrateDeviceThird();
-                Toast.makeText(getActivity().getApplicationContext(), "Image is required", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), "Tap on the cloud and select image first!", Toast.LENGTH_SHORT).show();
             }
         });
         return v2;

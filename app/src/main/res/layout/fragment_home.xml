@@ -41,13 +41,14 @@
         app:lottie_loop="true" />
 
     <ListView
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:id="@+id/myListView"
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:scrollbars="none"
         android:layout_height="match_parent"
         android:divider="@android:color/transparent"
-        android:dividerHeight="15.0sp"
-        android:padding="5dp">
+        android:dividerHeight="15.0sp">
 
     </ListView>
 

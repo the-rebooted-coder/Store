@@ -70,7 +70,7 @@ public class ListAdapter extends ArrayAdapter<SecureVaultModel> {
 
         Glide.with(getContext())
                 .load(url)
-                .override(400, 500)
+                .override(500, 500)
                 .fitCenter()
                 .into(foodImage);
         return listItemView;

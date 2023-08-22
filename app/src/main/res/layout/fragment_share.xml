@@ -28,20 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:contentDescription="@string/image_to_be_uploaded"
-                android:src="@drawable/ic_cupcake" />
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/disclosure"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:elevation="30dp"
-                android:textAlignment="center"
-                android:textSize="18sp"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
-                android:layout_marginTop="30dp"
-                android:fontFamily="@font/productsans"
-                android:text="Your Location will be recorded with your share so that the one who needs food can locate it easily!  "
-                android:textColor="#696969" />
+                android:src="@drawable/baseline_cloud_upload_24" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/shareFood"
@@ -53,7 +40,7 @@
                 android:elevation="30dp"
                 android:fontFamily="@font/productsansbold"
                 android:gravity="center"
-                android:text="@string/share_food"
+                android:text="STORE"
                 app:rippleColor="@color/teal_700">
 
             </com.google.android.material.button.MaterialButton>
