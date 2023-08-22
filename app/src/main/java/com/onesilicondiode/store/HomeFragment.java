@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,38 +33,49 @@ import static android.content.Context.MODE_PRIVATE;
 public class HomeFragment extends Fragment {
     LottieAnimationView lottieAnimationView, lottieAnimationView2;
     DatabaseReference foodDbAdd = FirebaseDatabase.getInstance().getReference("SecureVault/SecureVault");
+
+    // Add a member variable for storing the list of image URLs
+    private List<String> imageUrls;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater,container,savedInstanceState);
-        View v3 =  inflater.inflate(R.layout.fragment_home,container,false);
+        super.onCreateView(inflater, container, savedInstanceState);
+        View v3 = inflater.inflate(R.layout.fragment_home, container, false);
         lottieAnimationView = v3.findViewById(R.id.animation_view_here);
         lottieAnimationView2 = v3.findViewById(R.id.animation_view_here2);
-        if (isFirstTime()) {
-            //Perform something only once
-            Toast.makeText(getActivity(),"Tip: Tap cards to view on Map \uD83D\uDCA1",Toast.LENGTH_LONG).show();
-        }
+
         if (haveNetwork()) {
             ListView myListView;
             List<SecureVaultModel> foodList;
             myListView = v3.findViewById(R.id.myListView);
             foodList = new ArrayList<>();
+            imageUrls = new ArrayList<>(); // Initialize the imageUrls list
+
             foodDbAdd.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     myListView.setVisibility(View.INVISIBLE);
                     try {
                         foodList.clear();
+                        imageUrls.clear(); // Clear the existing URLs
+
                         for (DataSnapshot foodDatastamp : snapshot.getChildren()) {
                             SecureVaultModel food = foodDatastamp.getValue(SecureVaultModel.class);
                             try {
                                 foodList.add(food);
+                                // Add the image URL to the list
+                                imageUrls.add(food.getImageUrl());
                             } catch (NullPointerException e) {
                                 //DO NOT REMOVE THIS EMPTY CATCH
                             }
                         }
+
                         ListAdapter adapter = new ListAdapter(getActivity(), foodList);
                         myListView.setAdapter(adapter);
+
+                        // Start displaying images here
+                        startDisplayingImages(imageUrls);
                     } catch (Exception e) {
                         //DO NOT REMOVE THIS EMPTY CATCH
                     }
@@ -79,14 +92,14 @@ public class HomeFragment extends Fragment {
                 }
             });
 
-        }
-        else {
-            View v =  inflater.inflate(R.layout.activity_no_internet,container,false);
+        } else {
+            View v = inflater.inflate(R.layout.activity_no_internet, container, false);
             return v;
         }
         return v3;
     }
-    //Network Checking Boolean
+
+    // Network Checking Boolean
     private boolean haveNetwork() {
         boolean have_WIFI = false;
         boolean have_MobileData = false;
@@ -101,18 +114,19 @@ public class HomeFragment extends Fragment {
                 if (info.isConnected())
                     have_MobileData = true;
         }
-        return have_MobileData||have_WIFI;
+        return have_MobileData || have_WIFI;
     }
-    private boolean isFirstTime() {
-        SharedPreferences preferences = getActivity().getPreferences(MODE_PRIVATE);
-        boolean ranBefore = preferences.getBoolean("RanBefore", false);
-        if (!ranBefore) {
-            // first time
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("RanBefore", true);
-            editor.commit();
+
+    // Add a method to start displaying images
+    private void startDisplayingImages(List<String> urls) {
+        // Use Picasso to load and display images
+        for (String url : urls) {
+            ImageView imageView = new ImageView(getActivity());
+            Glide.with(getContext())
+                    .load(url)
+                    .into(imageView);
+            // Add the ImageView to your layout where you want to display the images
         }
-        return !ranBefore;
     }
 }
 
