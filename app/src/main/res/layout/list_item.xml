@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp"
+        android:elevation="50dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:background="@color/offwhite"
+            android:layout_height="wrap_content">
+
+        <Button
+                android:id="@+id/moreDetails"
+                android:layout_width="300dp"
+                android:layout_height="200dp"
+                android:layout_centerInParent="true"
+                android:background="@color/transperent" />
+
+        <TextView
+                android:id="@+id/foodName"
+                android:layout_width="match_parent"
+                android:layout_marginStart="5dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/productsansbold"
+                android:layout_marginTop="20dp"
+                android:layout_toEndOf="@+id/imageLoader"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+        <com.joooonho.SelectableRoundedImageView
+                android:id="@+id/imageLoader"
+                android:layout_height="180dp"
+                android:layout_width="180dp"
+                android:layout_marginStart="5dp"
+                app:sriv_left_top_corner_radius="8dp"
+                app:sriv_right_top_corner_radius="8dp"
+                app:sriv_left_bottom_corner_radius="8dp"
+                app:sriv_right_bottom_corner_radius="8dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_cupcake" />
+
+        <TextView
+            android:id="@+id/foodDescription"
+            android:layout_width="210dp"
+            android:layout_marginStart="5dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/foodName"
+            android:layout_toEndOf="@+id/imageLoader"
+            android:fontFamily="@font/productsans"
+            android:textSize="18sp"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/foodSuggestions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/productsansitalic"
+            android:textSize="18sp"
+            android:layout_below="@+id/foodDescription"
+            android:layout_toEndOf="@+id/imageLoader"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:singleLine="true"
+            android:scrollHorizontally="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit ="marquee_forever"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/black"/>
+
+         <TextView
+                android:id="@+id/address"
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:fontFamily="@font/productsans"
+                android:layout_toEndOf="@+id/imageLoader"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="15dp"
+                android:layout_below="@id/foodSuggestions"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:singleLine="true"
+                android:scrollHorizontally="true"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit ="marquee_forever"
+                android:layout_marginBottom="20dp"
+                />
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

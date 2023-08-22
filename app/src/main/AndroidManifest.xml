@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,8 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Store"
         tools:targetApi="31">
-        <activity
-            android:name=".MainActivity"
+        <activity android:name=".SignUp" />
+        <activity android:name=".Permission"/>
+        <activity android:name=".PrivacyPolicy" />
+        <activity android:name=".AboutDevelopers" />
+        <activity android:name=".Landing" />
+        <activity android:name=".SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
