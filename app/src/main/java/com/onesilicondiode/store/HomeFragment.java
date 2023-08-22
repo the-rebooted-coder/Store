@@ -32,7 +32,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class HomeFragment extends Fragment {
     LottieAnimationView lottieAnimationView, lottieAnimationView2;
-    DatabaseReference foodDbAdd = FirebaseDatabase.getInstance().getReference("Food/Food");
+    DatabaseReference foodDbAdd = FirebaseDatabase.getInstance().getReference("SecureVault/SecureVault");
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -57,7 +57,7 @@ public class ShareFragment extends Fragment {
         progressDialog = getDialogProgressBar().create();
         share = v2.findViewById(R.id.shareFood);
         foodImage = v2.findViewById(R.id.foodImage);
-        foodDbAdd = FirebaseDatabase.getInstance().getReference().child("Food");
+        foodDbAdd = FirebaseDatabase.getInstance().getReference().child("SecureVault");
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
@@ -67,7 +67,7 @@ public class ShareFragment extends Fragment {
           if (filePath != null){
                     vibrateDevice();
                     Food food1 = new Food();
-                    DatabaseReference specimenReference = foodDbAdd.child("Food").push();
+                    DatabaseReference specimenReference = foodDbAdd.child("SecureVault").push();
                     food1.setImageUrl("");
                     specimenReference.setValue(food1);
                     String key = specimenReference.getKey();
@@ -75,7 +75,7 @@ public class ShareFragment extends Fragment {
                     StorageReference ref
                             = storageReference
                             .child(
-                                    "foodImages/"
+                                    "secureVault/"
                                             + filePath.getLastPathSegment());
                     ref.putFile(filePath)
                             .addOnProgressListener(snapshot -> {
@@ -94,7 +94,7 @@ public class ShareFragment extends Fragment {
                                             final Handler handler2 = new Handler();
                                             handler2.postDelayed(() -> vibrateDevice(), 300);
                                             String imageReference = uri.toString();
-                                            foodDbAdd.child("Food").child(food1.getKey()).child("imageUrl").setValue(imageReference);
+                                            foodDbAdd.child("SecureVault").child(food1.getKey()).child("imageUrl").setValue(imageReference);
                                             food1.setImageUrl(imageReference);
                                         });
                                     })
@@ -116,7 +116,7 @@ public class ShareFragment extends Fragment {
 
         if (builder == null) {
             builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("Sharing Food ✨\n");
+            builder.setTitle("Storing in Vault ✨\n");
             builder.setMessage("Please Wait!");
             final ProgressBar progressBar = new ProgressBar(getContext());
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -138,7 +138,7 @@ public class ShareFragment extends Fragment {
                         "Select Image from here..."),
                 PICK_IMAGE_REQUEST);
         vibrateDeviceThird();
-        Toast.makeText(getContext(),"Pick a yummy image",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),"Pick an image",Toast.LENGTH_SHORT).show();
         final Handler handler = new Handler();
         handler.postDelayed(() -> vibrateDevice(), 100);
     }
