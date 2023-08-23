@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.joooonho.SelectableRoundedImageView;
 import com.pedromassango.doubleclick.DoubleClick;
 import com.pedromassango.doubleclick.DoubleClickListener;
@@ -71,6 +72,7 @@ public class ListAdapter extends ArrayAdapter<SecureVaultModel> {
         Glide.with(getContext())
                 .load(url)
                 .override(500, 500)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .fitCenter()
                 .into(foodImage);
         return listItemView;

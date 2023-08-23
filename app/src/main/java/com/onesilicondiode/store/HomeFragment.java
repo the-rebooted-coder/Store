@@ -19,6 +19,7 @@ import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -91,13 +92,21 @@ public class HomeFragment extends Fragment {
             });
 
         } else {
-            View v = inflater.inflate(R.layout.activity_no_internet, container, false);
-            return v;
+            placeHolder.setText("No Internet");
         }
         return v3;
     }
-
-    // Network Checking Boolean
+    // Add a method to start displaying images
+    private void startDisplayingImages(List<String> urls) {
+        for (String url : urls) {
+            ImageView imageView = new ImageView(getActivity());
+            Glide.with(getContext())
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imageView);
+            // Add the ImageView to your layout where you want to display the images
+        }
+    }
     private boolean haveNetwork() {
         boolean have_WIFI = false;
         boolean have_MobileData = false;
@@ -113,18 +122,6 @@ public class HomeFragment extends Fragment {
                     have_MobileData = true;
         }
         return have_MobileData || have_WIFI;
-    }
-
-    // Add a method to start displaying images
-    private void startDisplayingImages(List<String> urls) {
-        // Use Picasso to load and display images
-        for (String url : urls) {
-            ImageView imageView = new ImageView(getActivity());
-            Glide.with(getContext())
-                    .load(url)
-                    .into(imageView);
-            // Add the ImageView to your layout where you want to display the images
-        }
     }
 }
 

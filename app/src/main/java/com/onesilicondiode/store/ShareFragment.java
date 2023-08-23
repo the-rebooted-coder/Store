@@ -1,11 +1,14 @@
 package com.onesilicondiode.store;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.CONNECTIVITY_SERVICE;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -67,60 +70,66 @@ public class ShareFragment extends Fragment {
 
         foodImage.setOnClickListener(v -> selectImage());
         share.setOnClickListener(v -> {
-            if (filePath != null) {
-                vibrateDevice();
-                SecureVaultModel food1 = new SecureVaultModel();
-                DatabaseReference specimenReference = foodDbAdd.child("SecureVault").push();
-                food1.setImageUrl("");
-                specimenReference.setValue(food1);
-                String key = specimenReference.getKey();
-                food1.setKey(key);
+            if(haveNetwork()) {
+                if (filePath != null) {
+                    vibrateDevice();
+                    SecureVaultModel food1 = new SecureVaultModel();
+                    DatabaseReference specimenReference = foodDbAdd.child("SecureVault").push();
+                    food1.setImageUrl("");
+                    specimenReference.setValue(food1);
+                    String key = specimenReference.getKey();
+                    food1.setKey(key);
 
-                StorageReference ref = storageReference.child("secureVault/" + filePath.getLastPathSegment());
-                UploadTask uploadTask = ref.putFile(filePath);
+                    StorageReference ref = storageReference.child("secureVault/" + filePath.getLastPathSegment());
+                    UploadTask uploadTask = ref.putFile(filePath);
 
-                // Set up a progress listener for the upload task
-                uploadTask.addOnProgressListener(snapshot -> {
-                    double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                    // Update the progressText in your custom ProgressDialog
-                    progressText.setText("Uploading: " + (int) progress + "%");
-                    // Update the ProgressBar
-                    progressBar.setProgress((int) progress);
-                });
+                    // Set up a progress listener for the upload task
+                    uploadTask.addOnProgressListener(snapshot -> {
+                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                        // Update the progressText in your custom ProgressDialog
+                        progressText.setText("Uploading: " + (int) progress + "%");
+                        // Update the ProgressBar
+                        progressBar.setProgress((int) progress);
+                    });
 
-                uploadTask.addOnSuccessListener(
-                                taskSnapshot -> {
-                                    Task<Uri> downloadUrl = ref.getDownloadUrl();
-                                    downloadUrl.addOnSuccessListener(uri -> {
-                                        progressDialog.dismiss();
-                                        Toast.makeText(getActivity().getApplicationContext(), "Food Details Shared Successfully!", Toast.LENGTH_SHORT).show();
-                                        final Handler handler = new Handler();
-                                        handler.postDelayed(() -> vibrateDeviceThird(), 100);
-                                        final Handler handler2 = new Handler();
-                                        handler2.postDelayed(() -> vibrateDevice(), 300);
-                                        String imageReference = uri.toString();
-                                        foodDbAdd.child("SecureVault").child(food1.getKey()).child("imageUrl").setValue(imageReference);
-                                        food1.setImageUrl(imageReference);
-                                    });
-                                })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(getActivity().getApplicationContext(),
-                                            "Image Upload Failed " + e.getMessage(),
-                                            Toast.LENGTH_SHORT)
-                                    .show();
-                            if (progressDialog != null && progressDialog.isShowing()) {
-                                progressDialog.dismiss();
-                            }
-                        });
+                    uploadTask.addOnSuccessListener(
+                                    taskSnapshot -> {
+                                        Task<Uri> downloadUrl = ref.getDownloadUrl();
+                                        downloadUrl.addOnSuccessListener(uri -> {
+                                            progressDialog.dismiss();
+                                            Toast.makeText(getActivity().getApplicationContext(), "Stored in Vault Successfully!", Toast.LENGTH_SHORT).show();
+                                            final Handler handler = new Handler();
+                                            handler.postDelayed(() -> vibrateDeviceThird(), 100);
+                                            final Handler handler2 = new Handler();
+                                            handler2.postDelayed(() -> vibrateDevice(), 300);
+                                            String imageReference = uri.toString();
+                                            foodDbAdd.child("SecureVault").child(food1.getKey()).child("imageUrl").setValue(imageReference);
+                                            food1.setImageUrl(imageReference);
+                                        });
+                                    })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(getActivity().getApplicationContext(),
+                                                "Image Upload Failed " + e.getMessage(),
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                                if (progressDialog != null && progressDialog.isShowing()) {
+                                    progressDialog.dismiss();
+                                }
+                            });
 
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-            } else {
-                final Handler handler = new Handler();
-                handler.postDelayed(() -> vibrateDevice(), 100);
-                vibrateDeviceThird();
-                Toast.makeText(getActivity().getApplicationContext(), "Tap on the cloud and select image first!", Toast.LENGTH_SHORT).show();
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
+                } else {
+                    final Handler handler = new Handler();
+                    handler.postDelayed(() -> vibrateDevice(), 100);
+                    vibrateDeviceThird();
+                    Toast.makeText(getActivity().getApplicationContext(), "Tap on the cloud and select image first!", Toast.LENGTH_SHORT).show();
+                }
             }
+            else {
+                Toast.makeText(getActivity().getApplicationContext(), "No Internet 😔", Toast.LENGTH_SHORT).show();
+            }
+
         });
         return v2;
     }
@@ -205,5 +214,21 @@ public class ShareFragment extends Fragment {
     private void vibrateDeviceThird() {
         Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(VibrationEffect.createOneShot(36, VibrationEffect.DEFAULT_AMPLITUDE));
+    }
+    private boolean haveNetwork() {
+        boolean have_WIFI = false;
+        boolean have_MobileData = false;
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo[] networkInfos = connectivityManager.getAllNetworkInfo();
+        for (NetworkInfo info : networkInfos) {
+            if (info.getTypeName().equalsIgnoreCase("WIFI"))
+                if (info.isConnected())
+                    have_WIFI = true;
+            if (info.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (info.isConnected())
+                    have_MobileData = true;
+        }
+        return have_MobileData || have_WIFI;
     }
 }
