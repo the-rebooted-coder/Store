@@ -3,7 +3,7 @@ package com.onesilicondiode.store;
 public class SecureVaultModel {
     private String key;
     private String imageUrl;
-
+    private String userId;
 
     public SecureVaultModel() {
     }
@@ -24,4 +24,11 @@ public class SecureVaultModel {
         return imageUrl;
     }
 
+    public String getUserId() { // Getter for userId
+        return userId;
+    }
+
+    public void setUserId(String userId) { // Setter for userId
+        this.userId = userId;
+    }
 }

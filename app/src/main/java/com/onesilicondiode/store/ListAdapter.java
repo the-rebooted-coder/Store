@@ -72,7 +72,7 @@ public class ListAdapter extends ArrayAdapter<SecureVaultModel> {
         Glide.with(getContext())
                 .load(url)
                 .override(500, 500)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
+         //       .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .fitCenter()
                 .into(foodImage);
         return listItemView;

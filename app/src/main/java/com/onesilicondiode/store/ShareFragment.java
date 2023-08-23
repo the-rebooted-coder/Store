@@ -1,6 +1,7 @@
 package com.onesilicondiode.store;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
 import static android.content.Context.CONNECTIVITY_SERVICE;
 
 import android.app.Dialog;
@@ -10,39 +11,40 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class ShareFragment extends Fragment {
-
     MaterialButton share;
     DatabaseReference foodDbAdd;
     ImageView foodImage;
@@ -54,7 +56,6 @@ public class ShareFragment extends Fragment {
     private ProgressBar progressBar;
     private TextView progressText;
     private Dialog progressDialog;
-
 
     @Nullable
     @Override
@@ -70,66 +71,89 @@ public class ShareFragment extends Fragment {
 
         foodImage.setOnClickListener(v -> selectImage());
         share.setOnClickListener(v -> {
-            if(haveNetwork()) {
+            if (haveNetwork()) {
                 if (filePath != null) {
                     vibrateDevice();
                     SecureVaultModel food1 = new SecureVaultModel();
-                    DatabaseReference specimenReference = foodDbAdd.child("SecureVault").push();
-                    food1.setImageUrl("");
-                    specimenReference.setValue(food1);
-                    String key = specimenReference.getKey();
-                    food1.setKey(key);
 
-                    StorageReference ref = storageReference.child("secureVault/" + filePath.getLastPathSegment());
-                    UploadTask uploadTask = ref.putFile(filePath);
-                    share.setEnabled(false);
+                    // Obtain the current user's UID from Firebase Authentication
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    if (currentUser != null) {
+                        String userId = currentUser.getUid();
+                        food1.setUserId(userId); // Set the user's UID
 
-                    // Set up a progress listener for the upload task
-                    uploadTask.addOnProgressListener(snapshot -> {
-                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                        // Update the progressText in your custom ProgressDialog
-                        progressText.setText("Uploading: " + (int) progress + "%");
-                        // Update the ProgressBar
-                        progressBar.setProgress((int) progress);
-                    });
+                        DatabaseReference specimenReference = foodDbAdd.child("SecureVault").push();
+                        food1.setImageUrl("");
+                        specimenReference.setValue(food1);
+                        String key = specimenReference.getKey();
+                        food1.setKey(key);
 
-                    uploadTask.addOnSuccessListener(
-                                    taskSnapshot -> {
-                                        Task<Uri> downloadUrl = ref.getDownloadUrl();
-                                        downloadUrl.addOnSuccessListener(uri -> {
-                                            progressDialog.dismiss();
-                                            Toast.makeText(getActivity().getApplicationContext(), "Stored in Vault Successfully!", Toast.LENGTH_SHORT).show();
-                                            final Handler handler = new Handler();
-                                            handler.postDelayed(() -> vibrateDeviceThird(), 100);
-                                            final Handler handler2 = new Handler();
-                                            handler2.postDelayed(() -> vibrateDevice(), 300);
-                                            String imageReference = uri.toString();
-                                            foodDbAdd.child("SecureVault").child(food1.getKey()).child("imageUrl").setValue(imageReference);
-                                            food1.setImageUrl(imageReference);
-                                            share.setEnabled(true);
-                                        });
-                                    })
-                            .addOnFailureListener(e -> {
-                                share.setEnabled(true);
-                                Toast.makeText(getActivity().getApplicationContext(),
-                                                "Image Upload Failed " + e.getMessage(),
-                                                Toast.LENGTH_SHORT)
-                                        .show();
-                                if (progressDialog != null && progressDialog.isShowing()) {
-                                    progressDialog.dismiss();
-                                }
-                            });
+                        // Compress the selected image to WebP format
+                        try {
+                            Bitmap selectedImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
+                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                            selectedImage.compress(Bitmap.CompressFormat.WEBP, 70, byteArrayOutputStream);
+                            byte[] webpData = byteArrayOutputStream.toByteArray();
+                            filePath = saveWebPImage(webpData);
 
-                    progressDialog.setCancelable(false);
-                    progressDialog.show();
+                            // Now, you have the compressed image in filePath
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        StorageReference ref = storageReference.child("secureVault/" + filePath.getLastPathSegment());
+                        UploadTask uploadTask = ref.putFile(filePath);
+                        share.setEnabled(false);
+
+                        // Set up a progress listener for the upload task
+                        uploadTask.addOnProgressListener(snapshot -> {
+                            double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                            // Update the progressText in your custom ProgressDialog
+                            progressText.setText("Uploading: " + (int) progress + "%");
+                            // Update the ProgressBar
+                            progressBar.setProgress((int) progress);
+                        });
+
+                        uploadTask.addOnSuccessListener(
+                                        taskSnapshot -> {
+                                            Task<Uri> downloadUrl = ref.getDownloadUrl();
+                                            downloadUrl.addOnSuccessListener(uri -> {
+                                                progressDialog.dismiss();
+                                                Toast.makeText(getActivity().getApplicationContext(), "Stored in Vault Successfully!", Toast.LENGTH_SHORT).show();
+                                                final Handler handler = new Handler();
+                                                handler.postDelayed(() -> vibrateDeviceThird(), 100);
+                                                final Handler handler2 = new Handler();
+                                                handler2.postDelayed(() -> vibrateDevice(), 300);
+                                                String imageReference = uri.toString();
+                                                foodDbAdd.child("SecureVault").child(food1.getKey()).child("imageUrl").setValue(imageReference);
+                                                food1.setImageUrl(imageReference);
+                                                share.setEnabled(true);
+                                            });
+                                        })
+                                .addOnFailureListener(e -> {
+                                    share.setEnabled(true);
+                                    Toast.makeText(getActivity().getApplicationContext(),
+                                                    "Image Upload Failed " + e.getMessage(),
+                                                    Toast.LENGTH_SHORT)
+                                            .show();
+                                    if (progressDialog != null && progressDialog.isShowing()) {
+                                        progressDialog.dismiss();
+                                    }
+                                });
+
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();
+                    } else {
+                        // Handle the case where the user is not authenticated
+                        Toast.makeText(getActivity().getApplicationContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     final Handler handler = new Handler();
                     handler.postDelayed(() -> vibrateDevice(), 100);
                     vibrateDeviceThird();
-                    Toast.makeText(getActivity().getApplicationContext(), "Tap on the cloud and select image first!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Tap on the cloud and select an image first!", Toast.LENGTH_SHORT).show();
                 }
-            }
-            else {
+            } else {
                 Toast.makeText(getActivity().getApplicationContext(), "No Internet 😔", Toast.LENGTH_SHORT).show();
             }
 
@@ -178,15 +202,10 @@ public class ShareFragment extends Fragment {
                 progressDialog.dismiss();
             }
             // Get the Uri of data
+            filePath = data.getData();
             try {
-                filePath = data.getData();
-                // Setting image on image view using Bitmap
-                Bitmap bitmap = MediaStore
-                        .Images
-                        .Media
-                        .getBitmap(
-                                getActivity().getContentResolver(),
-                                filePath);
+                // Display the selected image
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
                 foodImage.setImageBitmap(bitmap);
             } catch (IOException e) {
                 // Log the exception
@@ -218,6 +237,7 @@ public class ShareFragment extends Fragment {
         Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(VibrationEffect.createOneShot(36, VibrationEffect.DEFAULT_AMPLITUDE));
     }
+
     private boolean haveNetwork() {
         boolean have_WIFI = false;
         boolean have_MobileData = false;
@@ -233,5 +253,20 @@ public class ShareFragment extends Fragment {
                     have_MobileData = true;
         }
         return have_MobileData || have_WIFI;
+    }
+
+    private Uri saveWebPImage(byte[] webpData) {
+        try {
+            // Generate a unique filename using a timestamp
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            String filename = "compressed_image_" + timestamp + ".webp";
+            FileOutputStream outputStream = getActivity().openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(webpData);
+            outputStream.close();
+            return Uri.fromFile(getActivity().getFileStreamPath(filename));
+        } catch (IOException e) {
+            Log.e(TAG, "Error saving WebP image: " + e.getMessage());
+            return null;
+        }
     }
 }
