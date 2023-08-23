@@ -5,8 +5,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/orange_500"
+    android:background="@color/white"
     tools:context=".SplashScreen">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerInParent="true"
+        android:elevation="30dp"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="sign_up.json"
+        app:lottie_loop="false" />
 
     <TextView
         android:id="@+id/title"
@@ -19,17 +29,8 @@
         android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
         android:textAlignment="center"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="24sp"
         />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_view"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_centerInParent="true"
-        android:elevation="30dp"
-        app:lottie_autoPlay="true"
-        app:lottie_fileName="bhojan_loader.json"
-        app:lottie_loop="false" />
 </RelativeLayout>
