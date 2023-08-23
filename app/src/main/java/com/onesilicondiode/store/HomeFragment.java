@@ -35,11 +35,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
-    LottieAnimationView lottieAnimationView2;
-    TextView placeHolder;
+    LottieAnimationView lottieAnimationView2, emptyWorld;
+    TextView placeHolder, emptyPlaceholder;
     DatabaseReference foodDbAdd;
     FirebaseAuth auth;
     FirebaseUser currentUser;
+    private View loadingView;
 
     // Add a member variable for storing the list of image URLs
     private List<String> imageUrls;
@@ -49,16 +50,16 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v3 = inflater.inflate(R.layout.fragment_home, container, false);
-
+        loadingView = inflater.inflate(R.layout.loading_layout, container, false);
+        container.addView(loadingView);
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
 
         // Initialize Firebase Database
         foodDbAdd = FirebaseDatabase.getInstance().getReference("SecureVault/SecureVault");
-
-        lottieAnimationView2 = v3.findViewById(R.id.animation_view_here2);
-        placeHolder = v3.findViewById(R.id.placeHolderText);
+        emptyWorld = v3.findViewById(R.id.emptyWorld);
+        emptyPlaceholder = v3.findViewById(R.id.emptyPlaceholder);
         ListView myListView;
         List<SecureVaultModel> foodList;
         myListView = v3.findViewById(R.id.myListView);
@@ -76,11 +77,9 @@ public class HomeFragment extends Fragment {
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    myListView.setVisibility(View.GONE);
                     try {
                         foodList.clear();
-                        imageUrls.clear(); // Clear the existing URLs
-
+                        imageUrls.clear();
                         for (DataSnapshot foodDatastamp : snapshot.getChildren()) {
                             SecureVaultModel food = foodDatastamp.getValue(SecureVaultModel.class);
                             try {
@@ -91,33 +90,57 @@ public class HomeFragment extends Fragment {
                                 // DO NOT REMOVE THIS EMPTY CATCH
                             }
                         }
+                        if (imageUrls.isEmpty()) {
+                            // Display a toast message indicating no images
+                            myListView.setVisibility(View.GONE); // Hide the ListView
+                            emptyPlaceholder.setVisibility(View.VISIBLE);
+                            emptyWorld.setVisibility(View.VISIBLE);
+                        } else {
+                            ListAdapter adapter = new ListAdapter(getActivity(), foodList);
+                            myListView.setAdapter(adapter);
+                            myListView.setVisibility(View.VISIBLE);
+                            emptyPlaceholder.setVisibility(View.GONE);
+                            emptyWorld.setVisibility(View.GONE);
+                            // Start displaying images here
+                            startDisplayingImages(imageUrls);
 
-                        ListAdapter adapter = new ListAdapter(getActivity(), foodList);
-                        myListView.setAdapter(adapter);
+                            // Remove the loading UI if it was added
+                            ViewGroup container = (ViewGroup) getView();
+                            if (container != null && loadingView != null) {
+                                container.removeView(loadingView);
+                            }
+                        }
 
-                        // Start displaying images here
-                        startDisplayingImages(imageUrls);
                     } catch (Exception e) {
                         // DO NOT REMOVE THIS EMPTY CATCH
                     }
-                    int splash_screen_time_out = 1500;
-                    new Handler().postDelayed(() -> {
-                        lottieAnimationView2.setVisibility(View.GONE);
-                        myListView.setVisibility(View.VISIBLE);
-                        placeHolder.setVisibility(View.GONE);
-                    }, splash_screen_time_out);
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                 }
             });
-        } else {
-            // Handle the case where the user is not authenticated
-            // You can display a message or redirect the user to login here
         }
-
         return v3;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        FloatingActionButton fabReload = view.findViewById(R.id.fabReload);
+        fabReload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle FAB click here
+                if (haveNetwork()) {
+                    // Refresh data from Firebase
+                    Toast.makeText(getContext(), "Refreshing", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     // Add a method to start displaying images
@@ -126,9 +149,26 @@ public class HomeFragment extends Fragment {
             ImageView imageView = new ImageView(getActivity());
             Glide.with(getContext())
                     .load(url)
-               //     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(imageView);
             // Add the ImageView to your layout where you want to display the images
         }
+    }
+
+    private boolean haveNetwork() {
+        boolean have_WIFI = false;
+        boolean have_MobileData = false;
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo[] networkInfos = connectivityManager.getAllNetworkInfo();
+        for (NetworkInfo info : networkInfos) {
+            if (info.getTypeName().equalsIgnoreCase("WIFI"))
+                if (info.isConnected())
+                    have_WIFI = true;
+            if (info.getTypeName().equalsIgnoreCase("MOBILE"))
+                if (info.isConnected())
+                    have_MobileData = true;
+        }
+        return have_MobileData || have_WIFI;
     }
 }
