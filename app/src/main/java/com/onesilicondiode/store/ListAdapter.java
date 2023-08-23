@@ -30,7 +30,6 @@ import java.util.List;
 public class ListAdapter extends ArrayAdapter<SecureVaultModel> {
     private final Activity mContext;
     private List<SecureVaultModel> foodList;
-    private Button moreDetails;
 
     public ListAdapter(Activity mContext, List<SecureVaultModel> foodList){
         super(mContext,R.layout.list_item,foodList);
@@ -43,12 +42,11 @@ public class ListAdapter extends ArrayAdapter<SecureVaultModel> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         LayoutInflater inflater =  mContext.getLayoutInflater();
         View listItemView = inflater.inflate(R.layout.list_item, null, true);
-        moreDetails = listItemView.findViewById(R.id.moreDetails);
-        SelectableRoundedImageView foodImage = listItemView.findViewById(R.id.imageLoader);
+        ImageView foodImage = listItemView.findViewById(R.id.imageLoader);
         SecureVaultModel food = foodList.get(position);
         String url = food.getImageUrl();
 
-        moreDetails.setOnClickListener(new DoubleClick(new DoubleClickListener() {
+        foodImage.setOnClickListener(new DoubleClick(new DoubleClickListener() {
             @Override
             public void onSingleClick(View view) {
                 vibrateDeviceSecond();
