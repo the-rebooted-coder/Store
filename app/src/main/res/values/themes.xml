@@ -12,5 +12,5 @@
         <item name="android:fontFamily">@font/psb</item>
     </style>
 
-    <color name="my_light_primary">#3537AD</color>
+    <color name="my_light_primary">#8E8E8E</color>
 </resources>

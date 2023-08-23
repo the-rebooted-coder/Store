@@ -80,7 +80,7 @@ public class SignUp extends AppCompatActivity {
 
         builder.setTitle("Choose Theme for Store");
         builder.setMessage("You can change it later inside the app!");
-        builder.setPositiveButton("Light", (dialog, which) -> {
+        builder.setPositiveButton("LIGHT", (dialog, which) -> {
             switch (nightModeFlags) {
                 case Configuration.UI_MODE_NIGHT_YES:
                     vibrateDevice();
@@ -112,7 +112,7 @@ public class SignUp extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Choose a theme",Toast.LENGTH_SHORT).show();
             }
         });
-        builder.setNegativeButton("Dark", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("DARK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (nightModeFlags) {

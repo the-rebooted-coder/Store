@@ -1,7 +1,11 @@
 package com.onesilicondiode.store;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
 
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -16,42 +20,42 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
-    LottieAnimationView lottieAnimationView2, emptyWorld;
-    TextView placeHolder, emptyPlaceholder;
+    LottieAnimationView emptyWorld;
+    TextView emptyPlaceholder;
     DatabaseReference foodDbAdd;
     FirebaseAuth auth;
     FirebaseUser currentUser;
-    private View loadingView;
 
     // Add a member variable for storing the list of image URLs
     private List<String> imageUrls;
+    public static final String UI_MODE = "uiMode";
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v3 = inflater.inflate(R.layout.fragment_home, container, false);
-        loadingView = inflater.inflate(R.layout.loading_layout, container, false);
-        container.addView(loadingView);
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
@@ -103,12 +107,6 @@ public class HomeFragment extends Fragment {
                             emptyWorld.setVisibility(View.GONE);
                             // Start displaying images here
                             startDisplayingImages(imageUrls);
-
-                            // Remove the loading UI if it was added
-                            ViewGroup container = (ViewGroup) getView();
-                            if (container != null && loadingView != null) {
-                                container.removeView(loadingView);
-                            }
                         }
 
                     } catch (Exception e) {
@@ -132,13 +130,7 @@ public class HomeFragment extends Fragment {
         fabReload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle FAB click here
-                if (haveNetwork()) {
-                    // Refresh data from Firebase
-                    Toast.makeText(getContext(), "Refreshing", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
-                }
+                showReloadDialog();
             }
         });
     }
@@ -155,20 +147,57 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private boolean haveNetwork() {
-        boolean have_WIFI = false;
-        boolean have_MobileData = false;
+    private void showReloadDialog() {
+        int nightModeFlags =
+                this.getResources().getConfiguration().uiMode &
+                        Configuration.UI_MODE_NIGHT_MASK;
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Choose Theme for Store"); // Set the dialog title
+        // Set the positive button and its click listener
+        builder.setPositiveButton("LIGHT", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (nightModeFlags) {
+                    case Configuration.UI_MODE_NIGHT_YES:
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        SharedPreferences.Editor editor = getContext().getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
+                        editor.putString("uiMode","Light");
+                        editor.apply();
+                        break;
+                    case Configuration.UI_MODE_NIGHT_NO:
+                        Toast.makeText(getContext(),"Already in Light Mode ☀️",Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        break;
+                    default:
+                        Toast.makeText(getContext(),"Choose a theme for Store",Toast.LENGTH_SHORT).show();
+                }
+                dialog.dismiss(); // Dismiss the dialog
+            }
+        });
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo[] networkInfos = connectivityManager.getAllNetworkInfo();
-        for (NetworkInfo info : networkInfos) {
-            if (info.getTypeName().equalsIgnoreCase("WIFI"))
-                if (info.isConnected())
-                    have_WIFI = true;
-            if (info.getTypeName().equalsIgnoreCase("MOBILE"))
-                if (info.isConnected())
-                    have_MobileData = true;
-        }
-        return have_MobileData || have_WIFI;
+        // Set the negative button and its click listener
+        builder.setNegativeButton("DARK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (nightModeFlags) {
+                    case Configuration.UI_MODE_NIGHT_YES:
+                        Toast.makeText(getContext(),"Already in Dark Mode \uD83C\uDF19",Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                        break;
+                    case Configuration.UI_MODE_NIGHT_NO:
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                        SharedPreferences.Editor editor = getContext().getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
+                        editor.putString("uiMode","Dark");
+                        editor.apply();
+                        break;
+                    default:
+                        Toast.makeText(getContext(),"Choose a theme",Toast.LENGTH_SHORT).show();
+                }
+                dialog.dismiss(); // Dismiss the dialog
+            }
+        });
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }
