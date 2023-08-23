@@ -82,6 +82,7 @@ public class ShareFragment extends Fragment {
 
                     StorageReference ref = storageReference.child("secureVault/" + filePath.getLastPathSegment());
                     UploadTask uploadTask = ref.putFile(filePath);
+                    share.setEnabled(false);
 
                     // Set up a progress listener for the upload task
                     uploadTask.addOnProgressListener(snapshot -> {
@@ -105,9 +106,11 @@ public class ShareFragment extends Fragment {
                                             String imageReference = uri.toString();
                                             foodDbAdd.child("SecureVault").child(food1.getKey()).child("imageUrl").setValue(imageReference);
                                             food1.setImageUrl(imageReference);
+                                            share.setEnabled(true);
                                         });
                                     })
                             .addOnFailureListener(e -> {
+                                share.setEnabled(true);
                                 Toast.makeText(getActivity().getApplicationContext(),
                                                 "Image Upload Failed " + e.getMessage(),
                                                 Toast.LENGTH_SHORT)

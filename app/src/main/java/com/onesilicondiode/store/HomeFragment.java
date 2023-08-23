@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -90,6 +92,27 @@ public class HomeFragment extends Fragment {
                 }
             });
         return v3;
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        FloatingActionButton fabReload = view.findViewById(R.id.fabReload);
+        fabReload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Handle FAB click here
+                if(haveNetwork()){
+                    FirebaseDatabase.getInstance().goOffline();
+                    FirebaseDatabase.getInstance().goOnline();
+                    startDisplayingImages(imageUrls);
+                    Toast.makeText(getContext(),"Refreshing",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getContext(),"No Internet",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
     // Add a method to start displaying images
     private void startDisplayingImages(List<String> urls) {
