@@ -77,41 +77,38 @@ public class SignUp extends AppCompatActivity {
                 this.getResources().getConfiguration().uiMode &
                         Configuration.UI_MODE_NIGHT_MASK;
         AlertDialog.Builder builder = new AlertDialog.Builder(SignUp.this);
-        builder.setTitle("Choose Theme for Bhojan");
-        builder.setMessage("You can always change it later inside the app!");
-        builder.setPositiveButton("Light", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (nightModeFlags) {
-                    case Configuration.UI_MODE_NIGHT_YES:
-                        vibrateDevice();
-                        signInButton.setVisibility(View.INVISIBLE);
-                        fadingTextView.setVisibility(View.INVISIBLE);
-                        fadingTextView.pause();
-                        lottieAnimationView.setVisibility(View.VISIBLE);
-                        lottieAnimationView.setAnimation("light_mode.json");
-                        lottieAnimationView.playAnimation();
-                        alertDialog1.dismiss();
-                        int theme_timeout = 2000;
-                        new Handler().postDelayed(() -> {
-                            lottieAnimationView.cancelAnimation();
-                            lottieAnimationView.setVisibility(View.GONE);
-                            signInButton.setVisibility(View.VISIBLE);
-                            fadingTextView.resume();
-                            fadingTextView.setVisibility(View.VISIBLE);
-                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                            SharedPreferences.Editor editor = getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
-                            editor.putString("uiMode","Light");
-                            editor.apply();
-                        }, theme_timeout);
-                        break;
-                    case Configuration.UI_MODE_NIGHT_NO:
-                        Toast.makeText(getApplicationContext(),"Already in Light Mode ☀️",Toast.LENGTH_SHORT).show();
-                        alertDialog1.dismiss();
-                        break;
-                    default:
-                        Toast.makeText(getApplicationContext(),"Choose a theme",Toast.LENGTH_SHORT).show();
-                }
+        builder.setTitle("Choose Theme for Store");
+        builder.setMessage("You can change it later inside the app!");
+        builder.setPositiveButton("Light", (dialog, which) -> {
+            switch (nightModeFlags) {
+                case Configuration.UI_MODE_NIGHT_YES:
+                    vibrateDevice();
+                    signInButton.setVisibility(View.INVISIBLE);
+                    fadingTextView.setVisibility(View.INVISIBLE);
+                    fadingTextView.pause();
+                    lottieAnimationView.setVisibility(View.VISIBLE);
+                    lottieAnimationView.setAnimation("light_mode.json");
+                    lottieAnimationView.playAnimation();
+                    alertDialog1.dismiss();
+                    int theme_timeout = 2000;
+                    new Handler().postDelayed(() -> {
+                        lottieAnimationView.cancelAnimation();
+                        lottieAnimationView.setVisibility(View.GONE);
+                        signInButton.setVisibility(View.VISIBLE);
+                        fadingTextView.resume();
+                        fadingTextView.setVisibility(View.VISIBLE);
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        SharedPreferences.Editor editor = getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
+                        editor.putString("uiMode","Light");
+                        editor.apply();
+                    }, theme_timeout);
+                    break;
+                case Configuration.UI_MODE_NIGHT_NO:
+                    Toast.makeText(getApplicationContext(),"Already in Light Mode ☀️",Toast.LENGTH_SHORT).show();
+                    alertDialog1.dismiss();
+                    break;
+                default:
+                    Toast.makeText(getApplicationContext(),"Choose a theme",Toast.LENGTH_SHORT).show();
             }
         });
         builder.setNegativeButton("Dark", new DialogInterface.OnClickListener() {

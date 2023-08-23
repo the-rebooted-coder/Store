@@ -1,6 +1,5 @@
 package com.onesilicondiode.store;
 
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,8 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Pair;
-import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -101,26 +98,18 @@ public class SplashScreen extends AppCompatActivity {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
         if (account != null) {
             //User Signed In, Proceeding to Landing
-            Intent i = new Intent(SplashScreen.this, Landing.class);
-            Pair [] pairs = new Pair[1];
-            TextView appName = findViewById(R.id.title);
-            pairs[0] = new Pair<View, String> (appName,"imageTransition");
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this,pairs);
-            startActivity(i,options.toBundle());
             int splash_screen_time_out = 1000;
             new Handler().postDelayed(() -> {
+                Intent i = new Intent(SplashScreen.this, Landing.class);
+                startActivity(i);
                 finish();
             }, splash_screen_time_out);
         } else {
             //Newbie
-            Intent i = new Intent(SplashScreen.this, SignUp.class);
-            Pair [] pairs = new Pair[1];
-            TextView appName = findViewById(R.id.title);
-            pairs[0] = new Pair<View, String> (appName,"imageTransition");
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this,pairs);
-            startActivity(i,options.toBundle());
             int splash_screen_time_out = 1000;
             new Handler().postDelayed(() -> {
+                Intent i = new Intent(SplashScreen.this, SignUp.class);
+                startActivity(i);
                 finish();
             }, splash_screen_time_out);
         }

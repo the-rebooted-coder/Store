@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/sign_up"
+    android:background="@drawable/sign_up_dark"
     tools:context=".SignUp">
 
     <com.airbnb.lottie.LottieAnimationView
@@ -29,16 +29,16 @@
         android:layout_marginStart="40dp"
         android:layout_marginTop="90dp"
         android:textAlignment="viewStart"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="34sp" />
-    
+
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" 
+        android:layout_height="wrap_content"
         android:layout_below="@id/first_hello"
         android:fontFamily="@font/productsans"
         android:layout_marginTop="10dp"
-        android:textColor="#3C3C3C"
+        android:textColor="#A3A3A3"
         android:textSize="15sp"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="50dp"
@@ -56,7 +56,7 @@
         android:layout_alignParentBottom="true"
         android:background="@color/transperent"
         android:text="Theme"
-        android:textColor="@color/black"
+        android:textColor="@color/White"
         android:fontFamily="@font/productsansbold"
         android:textSize="16sp"/>
 
@@ -88,9 +88,9 @@
         android:layout_marginStart="10dp"
         android:shadowColor="@android:color/darker_gray"
         android:text="@string/continue_with_google"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="16sp"
-        android:backgroundTint="#FFFFFF"
+        android:backgroundTint="@color/transperent"
         app:rippleColor="@color/orange_700"
         app:strokeColor="@color/teal_700" />
 </RelativeLayout>

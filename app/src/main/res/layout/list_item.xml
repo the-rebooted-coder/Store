@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="50dp"
-    android:layout_height="50dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardCornerRadius="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
         android:elevation="50dp">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:background="@color/offwhite"
+            android:background="#C2CAFF"
             android:layout_height="match_parent">
             <Button
                 android:id="@+id/moreDetails"
@@ -23,13 +23,13 @@
                 android:id="@+id/imageLoader"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:layout_marginStart="5dp"
+                android:padding="5dp"
                 app:sriv_left_top_corner_radius="8dp"
                 app:sriv_right_top_corner_radius="8dp"
                 app:sriv_left_bottom_corner_radius="8dp"
                 app:sriv_right_bottom_corner_radius="8dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_cupcake" />
+                android:src="@drawable/baseline_cloud_upload_24" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>
