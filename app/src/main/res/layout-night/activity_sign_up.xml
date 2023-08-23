@@ -44,7 +44,7 @@
         android:layout_marginEnd="50dp"
         android:text="@string/disclaimer"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/themeChoose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,6 +54,8 @@
         android:layout_marginStart="10dp"
         android:layout_marginBottom="100dp"
         android:layout_alignParentBottom="true"
+        app:rippleColor="@color/blues"
+        app:strokeColor="@color/blues"
         android:background="@color/transperent"
         android:text="Theme"
         android:textColor="@color/White"

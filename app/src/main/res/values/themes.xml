@@ -3,6 +3,8 @@
     <style name="Base.Theme.Store" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/my_light_primary</item>
+        <item name="colorSecondary">#A2A4E3</item>
+        <item name="colorAccent">#686CFF</item>
         <item name="android:fontFamily">@font/psb</item>
     </style>
 

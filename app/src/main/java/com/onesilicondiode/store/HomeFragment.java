@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,7 +32,8 @@ import static android.content.Context.CONNECTIVITY_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
 public class HomeFragment extends Fragment {
-    LottieAnimationView lottieAnimationView, lottieAnimationView2;
+    LottieAnimationView lottieAnimationView2;
+    TextView placeHolder;
     DatabaseReference foodDbAdd = FirebaseDatabase.getInstance().getReference("SecureVault/SecureVault");
 
     // Add a member variable for storing the list of image URLs
@@ -42,9 +44,8 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v3 = inflater.inflate(R.layout.fragment_home, container, false);
-        lottieAnimationView = v3.findViewById(R.id.animation_view_here);
         lottieAnimationView2 = v3.findViewById(R.id.animation_view_here2);
-
+        placeHolder = v3.findViewById(R.id.placeHolderText);
         if (haveNetwork()) {
             ListView myListView;
             List<SecureVaultModel> foodList;
@@ -81,9 +82,9 @@ public class HomeFragment extends Fragment {
                     }
                     int splash_screen_time_out = 1500;
                     new Handler().postDelayed(() -> {
-                        lottieAnimationView.setVisibility(View.GONE);
                         lottieAnimationView2.setVisibility(View.GONE);
                         myListView.setVisibility(View.VISIBLE);
+                        placeHolder.setVisibility(View.GONE);
                     }, splash_screen_time_out);
                 }
 

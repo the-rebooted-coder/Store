@@ -77,6 +77,7 @@ public class SignUp extends AppCompatActivity {
                 this.getResources().getConfiguration().uiMode &
                         Configuration.UI_MODE_NIGHT_MASK;
         AlertDialog.Builder builder = new AlertDialog.Builder(SignUp.this);
+
         builder.setTitle("Choose Theme for Store");
         builder.setMessage("You can change it later inside the app!");
         builder.setPositiveButton("Light", (dialog, which) -> {
