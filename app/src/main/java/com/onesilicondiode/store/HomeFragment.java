@@ -44,7 +44,6 @@ public class HomeFragment extends Fragment {
         View v3 = inflater.inflate(R.layout.fragment_home, container, false);
         lottieAnimationView2 = v3.findViewById(R.id.animation_view_here2);
         placeHolder = v3.findViewById(R.id.placeHolderText);
-        if (haveNetwork()) {
             ListView myListView;
             List<SecureVaultModel> foodList;
             myListView = v3.findViewById(R.id.myListView);
@@ -90,10 +89,6 @@ public class HomeFragment extends Fragment {
                 public void onCancelled(@NonNull DatabaseError error) {
                 }
             });
-
-        } else {
-            placeHolder.setText("No Internet");
-        }
         return v3;
     }
     // Add a method to start displaying images
