@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.animation.AlphaAnimation;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -21,7 +22,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class SplashScreen extends AppCompatActivity {
-    protected AlphaAnimation fadeIn = new AlphaAnimation(0.0f, 1.0f);
     String name;
     public static final String UI_MODE = "uiMode";
 
@@ -37,13 +37,8 @@ public class SplashScreen extends AppCompatActivity {
         applyUI();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        RelativeLayout relativeLayout = findViewById(R.id.splashScreenLayout);
-        TextView appName = findViewById(R.id.title);
         one();
-        appName.setText(R.string.app_name_extended);
-        appName.startAnimation(fadeIn);
         fireSplashScreen();
-        fadeIn.setDuration(1200);
     }
 
     private void applyUI() {
@@ -102,7 +97,16 @@ public class SplashScreen extends AppCompatActivity {
 
     private void check() {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
-        if (account != null) {
+        if (getIntent() != null && getIntent().hasExtra("key_from_my_app")) {
+            Toast.makeText(this,"Launching from Anumi, Bypassing Lock Screen",Toast.LENGTH_LONG).show();
+            int splash_screen_time_out = 300;
+            new Handler().postDelayed(() -> {
+                Intent i = new Intent(SplashScreen.this, Landing.class);
+                startActivity(i);
+                finish();
+            }, splash_screen_time_out);
+        }
+        else if (account != null) {
             //User Signed In, Proceeding to Landing
             int splash_screen_time_out = 300;
             new Handler().postDelayed(() -> {
@@ -110,7 +114,8 @@ public class SplashScreen extends AppCompatActivity {
                 startActivity(i);
                 finish();
             }, splash_screen_time_out);
-        } else {
+        }
+        else {
             //Newbie
             int splash_screen_time_out = 1000;
             new Handler().postDelayed(() -> {
