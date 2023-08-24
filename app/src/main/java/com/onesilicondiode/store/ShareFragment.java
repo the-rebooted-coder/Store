@@ -151,7 +151,7 @@ public class ShareFragment extends Fragment {
                     final Handler handler = new Handler();
                     handler.postDelayed(() -> vibrateDevice(), 100);
                     vibrateDeviceThird();
-                    Toast.makeText(getActivity().getApplicationContext(), "Tap on the cloud and select an image first!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "Tap on the image-lock above and select an image first!", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 Toast.makeText(getActivity().getApplicationContext(), "No Internet 😔", Toast.LENGTH_SHORT).show();
