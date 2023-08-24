@@ -8,14 +8,12 @@
     android:background="@color/white"
     tools:context=".SplashScreen">
 
-    <com.airbnb.lottie.LottieAnimationView
+    <ImageView
         android:id="@+id/animation_view"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_centerInParent="true"
-        android:elevation="30dp"
-        app:lottie_autoPlay="true"
-        app:lottie_fileName="sign_up.json"
+        android:src="@mipmap/ic_launcher"
         app:lottie_loop="false" />
 
     <TextView

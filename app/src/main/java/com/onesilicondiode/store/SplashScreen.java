@@ -104,7 +104,7 @@ public class SplashScreen extends AppCompatActivity {
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
         if (account != null) {
             //User Signed In, Proceeding to Landing
-            int splash_screen_time_out = 1000;
+            int splash_screen_time_out = 300;
             new Handler().postDelayed(() -> {
                 Intent i = new Intent(SplashScreen.this, Crash.class);
                 startActivity(i);
