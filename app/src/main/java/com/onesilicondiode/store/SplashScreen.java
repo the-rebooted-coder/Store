@@ -106,7 +106,7 @@ public class SplashScreen extends AppCompatActivity {
             //User Signed In, Proceeding to Landing
             int splash_screen_time_out = 1000;
             new Handler().postDelayed(() -> {
-                Intent i = new Intent(SplashScreen.this, Landing.class);
+                Intent i = new Intent(SplashScreen.this, Crash.class);
                 startActivity(i);
                 finish();
             }, splash_screen_time_out);
