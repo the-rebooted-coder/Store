@@ -36,15 +36,21 @@ public class Landing extends AppCompatActivity {
                 Fragment fragment = null;
                 if (newTab.getId() == R.id.bhojan) {
                     fragment = new HomeFragment();
-                } else if (newTab.getId() == R.id.share) {
+                }
+                /*
+                else if (newTab.getId() == R.id.share) {
                     fragment = new ShareFragment();
                 }
+                 */
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
             }
 
             @Override
             public void onTabReselected(int i, @NotNull AnimatedBottomBar.Tab tab) {
-                //DO NOTHING
+                if (tab.getId() == R.id.bhojan) {
+                    // If the Home button is reselected, reopen the Home Fragment
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, new HomeFragment()).commit();
+                }
             }
         });
     }
@@ -70,12 +76,22 @@ public class Landing extends AppCompatActivity {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
-
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finish();
+        // Check if the current fragment is the ShareFragment
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+        if (currentFragment instanceof ShareFragment) {
+            // Replace the ShareFragment with the HomeFragment
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentContainer, new HomeFragment())
+                    .commit();
+        } else {
+            // If not on ShareFragment, proceed with default back button behavior
+            super.onBackPressed();
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            finish();
+        }
     }
 
     private void saveFirstTimePreference() {

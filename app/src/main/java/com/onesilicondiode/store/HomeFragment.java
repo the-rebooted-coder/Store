@@ -47,7 +47,10 @@ public class HomeFragment extends Fragment {
     DatabaseReference foodDbAdd;
     FirebaseAuth auth;
     FirebaseUser currentUser;
-
+    private FloatingActionButton showMore;
+    private FloatingActionButton fabUpload;
+    private FloatingActionButton fabReload;
+    private boolean isFABMenuOpen = false;
     // Add a member variable for storing the list of image URLs
     private List<String> imageUrls;
     public static final String UI_MODE = "uiMode";
@@ -60,7 +63,9 @@ public class HomeFragment extends Fragment {
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance();
         currentUser = auth.getCurrentUser();
-
+        showMore = v3.findViewById(R.id.more);
+        fabUpload = v3.findViewById(R.id.fabUpload);
+        fabReload = v3.findViewById(R.id.fabReload);
         // Initialize Firebase Database
         foodDbAdd = FirebaseDatabase.getInstance().getReference("SecureVault/SecureVault");
         emptyWorld = v3.findViewById(R.id.emptyWorld);
@@ -70,7 +75,22 @@ public class HomeFragment extends Fragment {
         myListView = v3.findViewById(R.id.myGridView);
         foodList = new ArrayList<>();
         imageUrls = new ArrayList<>(); // Initialize the imageUrls list
-
+        fabUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentContainer, new ShareFragment()) // Replace with the ShareFragment
+                        .addToBackStack(null) // Add to back stack to handle navigation
+                        .commit();
+            }
+        });
+        showMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleFABMenu();
+            }
+        });
         // Check if a user is authenticated
         if (currentUser != null) {
             // Get the current user's UID
@@ -122,12 +142,44 @@ public class HomeFragment extends Fragment {
         }
         return v3;
     }
+    private void toggleFABMenu() {
+        if (isFABMenuOpen) {
+            // Close the FAB menu with animation
+            closeFABMenu();
+        } else {
+            // Open the FAB menu with animation
+            openFABMenu();
+        }
+    }
+    private void openFABMenu() {
+        isFABMenuOpen = true;
 
+        // Animate the "Upload" FAB
+        fabUpload.setVisibility(View.VISIBLE);
+        fabUpload.animate().translationY(0);
+        fabUpload.animate().alpha(1.0f);
+
+        // Animate the "Reload" FAB
+        fabReload.setVisibility(View.VISIBLE);
+        fabReload.animate().translationY(0);
+        fabReload.animate().alpha(1.0f);
+    }
+    private void closeFABMenu() {
+        isFABMenuOpen = false;
+
+        // Animate the "Upload" FAB
+        fabUpload.animate().translationY(0);
+        fabUpload.animate().alpha(0.0f);
+        fabUpload.setVisibility(View.GONE);
+
+        // Animate the "Reload" FAB
+        fabReload.animate().translationY(0);
+        fabReload.animate().alpha(0.0f);
+        fabReload.setVisibility(View.GONE);
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        FloatingActionButton fabReload = view.findViewById(R.id.fabReload);
         fabReload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

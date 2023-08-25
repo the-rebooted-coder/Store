@@ -92,7 +92,7 @@ public class ShareFragment extends Fragment {
                         try {
                             Bitmap selectedImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
                             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                            selectedImage.compress(Bitmap.CompressFormat.WEBP, 70, byteArrayOutputStream);
+                            selectedImage.compress(Bitmap.CompressFormat.WEBP, 75, byteArrayOutputStream);
                             byte[] webpData = byteArrayOutputStream.toByteArray();
                             filePath = saveWebPImage(webpData);
 
@@ -254,7 +254,6 @@ public class ShareFragment extends Fragment {
         }
         return have_MobileData || have_WIFI;
     }
-
     private Uri saveWebPImage(byte[] webpData) {
         try {
             // Generate a unique filename using a timestamp

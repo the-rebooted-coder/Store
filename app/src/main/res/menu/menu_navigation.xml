@@ -4,8 +4,4 @@
         android:id="@+id/bhojan"
         android:title="Browse"
         android:icon="@drawable/bhojan_ico"/>
-    <item
-        android:id="@+id/share"
-        android:title="Store"
-        android:icon="@drawable/baseline_cloud_upload_24"/>
 </menu>
