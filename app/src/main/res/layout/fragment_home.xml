@@ -1,70 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/appName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:fontFamily="@font/productsansbold"
+            android:text="Vault"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:transitionName="imageTransition" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/emptyWorld"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center"
+            android:elevation="20dp"
+            android:visibility="gone"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="empty.json"
+            app:lottie_loop="true" />
+
+        <TextView
+            android:id="@+id/emptyPlaceholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:text="@string/disclaimer_two"
+            android:textAlignment="center"
+            android:textColor="#6A6A6A"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <GridView
+            android:id="@+id/myGridView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:numColumns="2"
+            android:verticalSpacing="15dp"/>
+    </LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabUpload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="90dp"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+        app:srcCompat="@drawable/baseline_cloud_upload_24" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabReload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/theme"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior" />
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
-    <TextView
-        android:id="@+id/appName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:transitionName="imageTransition"
-        android:layout_marginTop="50dp"
-        android:fontFamily="@font/productsansbold"
-        android:text="Vault"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="24sp" />
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/emptyWorld"
-        android:layout_width="250dp"
-        android:layout_gravity="center"
-        android:layout_height="250dp"
-        android:elevation="20dp"
-        android:visibility="gone"
-        app:lottie_autoPlay="true"
-        app:lottie_fileName="empty.json"
-        app:lottie_loop="true" />
-    <TextView
-        android:id="@+id/emptyPlaceholder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textAlignment="center"
-        android:layout_margin="10dp"
-        android:paddingStart="15dp"
-        android:visibility="gone"
-        android:textSize="16sp"
-        android:paddingEnd="15dp"
-        android:textColor="#6A6A6A"
-        android:text="@string/disclaimer_two"/>
-
-    <ListView
-        android:layout_gravity="center"
-        android:layout_marginTop="40dp"
-        android:id="@+id/myListView"
-        android:layout_width="150dp"
-        android:scrollbars="none"
-        android:layout_height="match_parent"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="15.0sp">
-    </ListView>
-
-</LinearLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
+        app:srcCompat="@drawable/theme"  />
+</RelativeLayout>

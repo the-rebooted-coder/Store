@@ -5,6 +5,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('C:\\Users\\NGC\\Desktop\\Anshu\\key.jks')
+            storePassword '510191anshu'
+            keyAlias 'anshu'
+            keyPassword '510191anshu'
+        }
+    }
     namespace 'com.onesilicondiode.store'
     compileSdk 33
 

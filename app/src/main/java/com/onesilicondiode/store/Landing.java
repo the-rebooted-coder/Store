@@ -36,10 +36,8 @@ public class Landing extends AppCompatActivity {
                 Fragment fragment = null;
                 if (newTab.getId() == R.id.bhojan) {
                     fragment = new HomeFragment();
-                    Log.d("TabSwitch", "Switched to HomeFragment");
                 } else if (newTab.getId() == R.id.share) {
                     fragment = new ShareFragment();
-                    Log.d("TabSwitch", "Switched to ShareFragment");
                 }
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
             }

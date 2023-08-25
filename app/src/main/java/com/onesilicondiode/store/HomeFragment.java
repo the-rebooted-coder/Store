@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -64,9 +65,9 @@ public class HomeFragment extends Fragment {
         foodDbAdd = FirebaseDatabase.getInstance().getReference("SecureVault/SecureVault");
         emptyWorld = v3.findViewById(R.id.emptyWorld);
         emptyPlaceholder = v3.findViewById(R.id.emptyPlaceholder);
-        ListView myListView;
+        GridView myListView;
         List<SecureVaultModel> foodList;
-        myListView = v3.findViewById(R.id.myListView);
+        myListView = v3.findViewById(R.id.myGridView);
         foodList = new ArrayList<>();
         imageUrls = new ArrayList<>(); // Initialize the imageUrls list
 
