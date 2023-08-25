@@ -20,8 +20,8 @@ android {
         applicationId "com.onesilicondiode.store"
         minSdk 26
         targetSdk 33
-        versionCode 1
-        versionName "Apple 🍎"
+        versionCode 2
+        versionName "Grapes 🍇"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
