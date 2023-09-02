@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,6 +42,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
     private FloatingActionButton fab;
     private RecyclerView journalRecyclerView;
     private FirebaseUser currentUser;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
     private DatabaseReference journalDatabase;
     private Vibrator vibrator;
     private JournalAdapter journalAdapter;
@@ -71,7 +73,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
         // Set an onClickListener for the FAB to add a new journal entry
         fab.setOnClickListener(v -> {
             vibrateToEnter();
-            showAddEntryDialog();
+            checkIfEntryExistsForToday();
         });
 
         // Retrieve and display journal entries for the current user
@@ -161,7 +163,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
             if (!title.isEmpty() && !content.isEmpty()) {
                 // Create a new journal entry with the current date and time
                 Date currentDate = new Date();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
                 String formattedDate = dateFormat.format(currentDate); // Format the date as a string
 
                 // Generate a unique key for the entry
@@ -207,4 +209,63 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
         VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
         vibrator.vibrate(vibrationEffect);
     }
+    private void checkIfEntryExistsForToday() {
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            DatabaseReference userJournalRef = journalDatabase.child(userId);
+
+            userJournalRef.orderByChild("date").limitToLast(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        DataSnapshot latestEntrySnapshot = dataSnapshot.getChildren().iterator().next();
+
+                        // Get the date string from the latest entry
+                        String latestDate = latestEntrySnapshot.child("date").getValue(String.class);
+
+                        try {
+                            // Parse the latest date string into a Date object
+                            Date latestEntryDate = dateFormat.parse(latestDate);
+
+                            // Get the current date
+                            Date currentDate = new Date();
+                            String formattedCurrentDate = dateFormat.format(currentDate);
+
+                            // Check if the latest entry's date is the same as the current date
+                            if (formattedCurrentDate.equals(dateFormat.format(latestEntryDate))) {
+                                // An entry for today already exists, show a message to the user
+                                showMessage("You've already made an entry for today. Please come back later.");
+                            } else {
+                                // No entry for today, allow the user to add a new entry
+                                showAddEntryDialog();
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        // No entries exist, allow the user to add a new entry
+                        showAddEntryDialog();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle any errors here
+                }
+            });
+        }
+    }
+    private void showMessage(String message) {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
+        builder.setTitle("Done for the day!");
+        builder.setMessage(message);
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            dialog.dismiss();
+            vibrate();
+        });
+
+        builder.create().show();
+    }
+
 }
