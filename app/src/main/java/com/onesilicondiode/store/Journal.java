@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,7 +43,6 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
     private FloatingActionButton fab;
     private RecyclerView journalRecyclerView;
     private FirebaseUser currentUser;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
     private DatabaseReference journalDatabase;
     private Vibrator vibrator;
     private JournalAdapter journalAdapter;
@@ -219,25 +219,30 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         DataSnapshot latestEntrySnapshot = dataSnapshot.getChildren().iterator().next();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
 
                         // Get the date string from the latest entry
-                        String latestDate = latestEntrySnapshot.child("date").getValue(String.class);
+                        String latestDateString = latestEntrySnapshot.child("date").getValue(String.class);
+                        String formattedCurrentDateString = dateFormat.format(new Date());
 
                         try {
-                            // Parse the latest date string into a Date object
-                            Date latestEntryDate = dateFormat.parse(latestDate);
+                            // Parse the date strings into Date objects
+                            Date latestDate = dateFormat.parse(latestDateString);
+                            Date formattedCurrentDate = dateFormat.parse(formattedCurrentDateString);
 
-                            // Get the current date
-                            Date currentDate = new Date();
-                            String formattedCurrentDate = dateFormat.format(currentDate);
+                            if (latestDate != null && formattedCurrentDate != null) {
+                                // Format the dates to only include the date part (MMM dd, yyyy)
+                                String latestDateFormatted = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(latestDate);
+                                String currentDayFormatted = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(formattedCurrentDate);
 
-                            // Check if the latest entry's date is the same as the current date
-                            if (formattedCurrentDate.equals(dateFormat.format(latestEntryDate))) {
-                                // An entry for today already exists, show a message to the user
-                                showMessage("You've already made an entry for today. Please come back later.");
-                            } else {
-                                // No entry for today, allow the user to add a new entry
-                                showAddEntryDialog();
+                                // Check if the latest entry's date is the same as the current date
+                                if (latestDateFormatted.equals(currentDayFormatted)) {
+                                    // An entry for today already exists, show a message to the user
+                                    showMessage("You've already made an entry for today. Please come back later.");
+                                } else {
+                                    // No entry for today, allow the user to add a new entry
+                                    showAddEntryDialog();
+                                }
                             }
                         } catch (ParseException e) {
                             e.printStackTrace();

@@ -29,8 +29,8 @@
             android:id="@+id/contentEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="5"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:maxLines="10" />
     </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

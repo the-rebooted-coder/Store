@@ -44,8 +44,8 @@ public class JournalEntry implements Comparable<JournalEntry> {
         try {
             Date thisDate = dateFormat.parse(this.date);
             Date otherDate = dateFormat.parse(other.date);
-            // Compare based on date (newest first)
-            return otherDate.compareTo(thisDate);
+            // Compare based on date (newest first), without reversing the order
+            return thisDate.compareTo(otherDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
