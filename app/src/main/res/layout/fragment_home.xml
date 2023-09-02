@@ -11,19 +11,6 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/appName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="50dp"
-            android:fontFamily="@font/productsansbold"
-            android:text="Vault"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            android:transitionName="imageTransition" />
-
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/emptyWorld"
             android:layout_width="250dp"
@@ -63,9 +50,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="230dp"
-        android:visibility="gone"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="240dp"
+        android:visibility="invisible"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:srcCompat="@drawable/baseline_cloud_upload_24" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -74,9 +61,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="160dp"
-        android:visibility="gone"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="170dp"
+        android:visibility="invisible"
         app:maxImageSize="30dp"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:srcCompat="@drawable/upgrade_24"  />
@@ -86,19 +73,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="90dp"
-        android:visibility="gone"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="100dp"
+        android:visibility="invisible"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:srcCompat="@drawable/theme"  />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="20dp"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-        app:srcCompat="@drawable/more"  />
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
+        android:src="@drawable/more"/>
 </RelativeLayout>
