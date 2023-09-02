@@ -62,4 +62,6 @@
     <string name="disclaimer">This app would only start for the first time directly, post login you will need the \'Anumi\' App to Launch.</string>
     <string name="disclaimer_two">Nothing stored in the Vault right now, go to the \'Store\' Tab to Start Vaulting Photos</string>
     <string name="disclaimer_three">All the images vaulted are secured through 256-Bit Military Grade Encryption, only you can browse them.</string>
+    <string name="browse">Browse</string>
+    <string name="journal">Journal</string>
 </resources>

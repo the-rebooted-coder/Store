@@ -1,11 +1,12 @@
-
 package com.onesilicondiode.store;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,11 +19,13 @@ import nl.joery.animatedbottombar.AnimatedBottomBar;
 
 public class Landing extends AppCompatActivity {
     AnimatedBottomBar animatedBottomBar;
+    private Vibrator vibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         boolean isFirstTime = isFirstTimeOpen();
         if (isFirstTime) {
             // Show an alert dialog for the first-time users
@@ -35,13 +38,13 @@ public class Landing extends AppCompatActivity {
             public void onTabSelected(int lastIndex, @Nullable AnimatedBottomBar.Tab lastTab, int newIndex, @NotNull AnimatedBottomBar.Tab newTab) {
                 Fragment fragment = null;
                 if (newTab.getId() == R.id.bhojan) {
+                    vibrate();
                     fragment = new HomeFragment();
                 }
-                /*
-                else if (newTab.getId() == R.id.share) {
-                    fragment = new ShareFragment();
+                else if (newTab.getId() == R.id.journal) {
+                    vibrate();
+                    fragment = new Journal();
                 }
-                 */
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
             }
 
@@ -76,6 +79,7 @@ public class Landing extends AppCompatActivity {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
     @Override
     public void onBackPressed() {
         // Check if the current fragment is the ShareFragment
@@ -99,5 +103,19 @@ public class Landing extends AppCompatActivity {
 
         // Set the "firstTime" preference to true
         preferences.edit().putBoolean("firstTime", true).apply();
+    }
+    private void vibrate() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            vibrator.vibrate(
+                    VibrationEffect.startComposition()
+                            .addPrimitive(VibrationEffect.Composition.PRIMITIVE_SLOW_RISE, 0.3f)
+                            .addPrimitive(VibrationEffect.Composition.PRIMITIVE_QUICK_FALL, 0.3f)
+                            .compose());
+        } else {
+            long[] pattern = {5,0,5,0,5,1,5,1,5,2,5,2,5,3,5,4,5,4,5,5,5,6,5,6,5,7,5,8,5,8,5,9,5,10,5,10,5,11,5,11,5,12,5,13,5,13,5,14,5,14,5,15,5,15,5,16,5,16,5,17,5,17,5,17,5,18,5,18,5,19,5,19,5,19,5,20,5,20,5,20,5,21,5,21,5,21,5,22,5,22,5,22,5,22,5,23,5,23,5,23,5,23,5,23,5,24,5,24,5,24,5,24,5,24,5,24,5,24,5,24,5,25,5,25,5,25,5,25,5,25,5,25,5,25,5,25,5,25,5,25,5};
+
+            VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
+            vibrator.vibrate(vibrationEffect);
+        }
     }
 }

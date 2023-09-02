@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/bhojan"
-        android:title="Browse"
+        android:title="@string/browse"
         android:icon="@drawable/bhojan_ico"/>
+    <item
+        android:id="@+id/journal"
+        android:title="@string/journal"
+        android:icon="@drawable/baseline_book_24"/>
 </menu>
