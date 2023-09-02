@@ -9,18 +9,21 @@
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/psb"
         android:textSize="18sp"
         android:textStyle="bold" />
     <TextView
         android:id="@+id/contentTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/productsans"
         android:textSize="16sp"
         android:layout_marginTop="8dp" />
     <TextView
         android:id="@+id/dateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/productsansitalic"
         android:textSize="14sp"
         android:layout_marginTop="8dp"
         android:textColor="@android:color/darker_gray" />

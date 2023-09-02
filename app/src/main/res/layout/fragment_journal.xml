@@ -11,7 +11,25 @@
         android:layout_height="match_parent"
         android:layout_above="@id/fab"
         android:layout_marginBottom="16dp" />
-
+    <TextView
+        android:id="@+id/noEntriesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:padding="5dp"
+        android:textSize="16sp"
+        android:text="@string/ask_to_write"
+        android:layout_centerInParent="true"
+        android:visibility="visible" />
+    <ImageView
+        android:id="@+id/noEntriesImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/noEntriesTextView"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/arrow"
+        android:visibility="gone"
+        />
     <!-- FloatingActionButton (FAB) to add journal entries -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
