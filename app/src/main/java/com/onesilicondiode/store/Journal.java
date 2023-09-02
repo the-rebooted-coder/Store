@@ -42,7 +42,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
     private FloatingActionButton fab;
     private RecyclerView journalRecyclerView;
     private FirebaseUser currentUser;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
     private DatabaseReference journalDatabase;
     private Vibrator vibrator;
     private JournalAdapter journalAdapter;
@@ -163,7 +163,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
             if (!title.isEmpty() && !content.isEmpty()) {
                 // Create a new journal entry with the current date and time
                 Date currentDate = new Date();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
                 String formattedDate = dateFormat.format(currentDate); // Format the date as a string
 
                 // Generate a unique key for the entry
