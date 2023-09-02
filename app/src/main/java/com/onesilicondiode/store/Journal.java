@@ -1,16 +1,20 @@
 package com.onesilicondiode.store;
 
-import android.annotation.SuppressLint;
+import static android.content.Context.VIBRATOR_SERVICE;
+
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -18,8 +22,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,12 +35,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class Journal extends Fragment {
+public class Journal extends Fragment implements JournalAdapter.OnItemClickListener {
     private FloatingActionButton fab;
     private RecyclerView journalRecyclerView;
-    private JournalAdapter journalAdapter;
-    private DatabaseReference journalDatabase;
     private FirebaseUser currentUser;
+    private DatabaseReference journalDatabase;
+    private Vibrator vibrator;
+    private JournalAdapter journalAdapter;
     private List<JournalEntry> journalEntries = new ArrayList<>();
 
     @Nullable
@@ -54,11 +57,13 @@ public class Journal extends Fragment {
 
         // Get the current user
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-
+        if (getActivity() != null) {
+            vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
+        }
         // Set up RecyclerView and Adapter
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         journalRecyclerView.setLayoutManager(layoutManager);
-        journalAdapter = new JournalAdapter(getContext(), journalEntries);
+        journalAdapter = new JournalAdapter(getContext(), journalEntries, this);
         journalRecyclerView.setAdapter(journalAdapter);
 
         // Set an onClickListener for the FAB to add a new journal entry
@@ -103,7 +108,28 @@ public class Journal extends Fragment {
         return view;
     }
 
-    // Show an AlertDialog to add a new journal entry
+    private void showDeleteEntryDialog(JournalEntry entryToDelete) {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
+        builder.setTitle("Delete Journal Entry");
+        builder.setMessage("Are you sure you want to delete this journal entry?");
+
+        builder.setPositiveButton("Delete", (dialog, which) -> {
+            // Delete the entry from Firebase
+            if (currentUser != null) {
+                String userId = currentUser.getUid();
+                DatabaseReference userJournalRef = journalDatabase.child(userId);
+                userJournalRef.child(entryToDelete.getKey()).removeValue(); // Assuming each entry has a unique key
+            }
+            dialog.dismiss();
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            dialog.dismiss();
+        });
+
+        builder.create().show();
+    }
+
     private void showAddEntryDialog() {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         builder.setTitle("Add a New Journal Entry");
@@ -128,18 +154,19 @@ public class Journal extends Fragment {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
                 String formattedDate = dateFormat.format(currentDate); // Format the date as a string
 
-                JournalEntry entry = new JournalEntry(title, content, formattedDate); // Store the formatted date as a string
+                // Generate a unique key for the entry
+                String entryKey = journalDatabase.push().getKey();
+
+                JournalEntry entry = new JournalEntry(title, content, formattedDate, entryKey); // Pass the key
 
                 if (currentUser != null) {
                     String userId = currentUser.getUid();
                     DatabaseReference userJournalRef = journalDatabase.child(userId);
-                    String entryKey = userJournalRef.push().getKey();
                     if (entryKey != null) {
                         userJournalRef.child(entryKey).setValue(entry);
                     }
                 }
-            }
-            else if (title.isEmpty()){
+            } else if (title.isEmpty()) {
                 titleLayout.setError("Title is Required");
             } else if (content.isEmpty()) {
                 contentLayout.setError("Content is Required");
@@ -150,5 +177,18 @@ public class Journal extends Fragment {
         });
 
         builder.create().show();
+    }
+
+    @Override
+    public void onDeleteClicked(JournalEntry entryToDelete) {
+        // Handle the delete action here
+        vibrate();
+        showDeleteEntryDialog(entryToDelete);
+    }
+
+    private void vibrate() {
+        long[] pattern = {5, 0, 5, 0, 5, 1, 5, 1, 5, 2, 5, 2, 5, 3, 5, 4, 5, 4, 5, 5, 5, 6, 5, 6, 5, 7, 5, 8, 5, 8, 5, 9, 5, 10, 5, 10, 5, 11, 5, 11, 5, 12, 5, 13, 5, 13, 5, 14, 5, 14, 5, 15, 5, 15, 5, 16, 5, 16, 5, 17, 5, 17, 5, 17, 5, 18, 5, 18, 5, 19, 5, 19, 5, 19, 5, 20, 5, 20, 5, 20, 5, 21, 5, 21, 5, 21, 5, 22, 5, 22, 5, 22, 5, 22, 5, 23, 5, 23, 5, 23, 5, 23, 5, 23, 5, 24, 5, 24, 5, 24, 5, 24, 5, 24, 5, 24, 5, 24, 5, 24, 5, 25, 5, 25, 5, 25, 5, 25, 5, 25, 5, 25, 5, 25, 5, 25, 5, 25, 5, 25, 5};
+        VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
+        vibrator.vibrate(vibrationEffect);
     }
 }

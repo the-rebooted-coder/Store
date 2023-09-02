@@ -1,18 +1,30 @@
 package com.onesilicondiode.store;
 
-public class JournalEntry {
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+public class JournalEntry implements Comparable<JournalEntry> {
     private String title;
     private String content;
-    private String date; // Store the date as a String
+    private String date;
+    private String key; // Add a key field
 
     public JournalEntry() {
         // Default constructor required for Firebase
     }
 
-    public JournalEntry(String title, String content, String date) {
+    public JournalEntry(String title, String content, String formattedDate, String key) {
         this.title = title;
         this.content = content;
-        this.date = date;
+        this.date = formattedDate;
+        this.key = key;
+    }
+
+    // Getter method for the key
+    public String getKey() {
+        return key;
     }
 
     public String getTitle() {
@@ -25,5 +37,18 @@ public class JournalEntry {
 
     public String getDate() {
         return date;
+    }
+    @Override
+    public int compareTo(JournalEntry other) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
+        try {
+            Date thisDate = dateFormat.parse(this.date);
+            Date otherDate = dateFormat.parse(other.date);
+            // Compare based on date (newest first)
+            return otherDate.compareTo(thisDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

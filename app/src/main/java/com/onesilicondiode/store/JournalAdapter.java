@@ -17,12 +17,15 @@ import java.util.Locale;
 
 public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHolder> {
     private List<JournalEntry> journalEntries;
+    private OnItemClickListener onItemClickListener;
+
     private Context context;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
 
-    public JournalAdapter(Context context, List<JournalEntry> journalEntries) {
+    public JournalAdapter(Context context, List<JournalEntry> journalEntries, OnItemClickListener onItemClickListener) {
         this.context = context;
         this.journalEntries = journalEntries;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -52,7 +55,19 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onDeleteClicked(entry);
+                    }
+                    return true;
+                }
+            });
         }
+    }
+    public interface OnItemClickListener {
+        void onDeleteClicked(JournalEntry entry);
     }
 
     @Override
