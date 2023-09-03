@@ -11,19 +11,11 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/bottomNavigation"/>
 
-    <nl.joery.animatedbottombar.AnimatedBottomBar
+    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
-        android:hapticFeedbackEnabled="true"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:abb_selectedTabType="text"
-        app:abb_indicatorLocation="bottom"
-        app:abb_rippleEnabled="true"
-        app:abb_indicatorAppearance="round"
-        app:abb_indicatorMargin="16dp"
-        app:abb_indicatorHeight="4dp"
-        app:abb_tabs="@menu/menu_navigation"
-        app:abb_selectedIndex="0" />
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/menu_navigation" />
 
 </RelativeLayout>

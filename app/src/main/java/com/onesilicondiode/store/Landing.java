@@ -1,28 +1,22 @@
 package com.onesilicondiode.store;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.snackbar.Snackbar;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import nl.joery.animatedbottombar.AnimatedBottomBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class Landing extends AppCompatActivity {
-    AnimatedBottomBar animatedBottomBar;
+    private BottomNavigationView bottomNavigationView;
     private Vibrator vibrator;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,30 +28,21 @@ public class Landing extends AppCompatActivity {
             // Show an alert dialog for the first-time users
             showFirstTimeAlertDialog();
         }
-        animatedBottomBar = findViewById(R.id.bottomNavigation);
+        bottomNavigationView = findViewById(R.id.bottomNavigation);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, new HomeFragment()).commit();
-        animatedBottomBar.setOnTabSelectListener(new AnimatedBottomBar.OnTabSelectListener() {
-            @Override
-            public void onTabSelected(int lastIndex, @Nullable AnimatedBottomBar.Tab lastTab, int newIndex, @NotNull AnimatedBottomBar.Tab newTab) {
-                Fragment fragment = null;
-                if (newTab.getId() == R.id.bhojan) {
-                    vibrate();
-                    fragment = new HomeFragment();
-                }
-                else if (newTab.getId() == R.id.journal) {
-                    vibrate();
-                    fragment = new Journal();
-                }
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Fragment fragment = null;
+            if (item.getItemId() == R.id.bhojan) {
+                vibrate();
+                fragment = new HomeFragment();
+            } else if (item.getItemId() == R.id.journal) {
+                vibrate();
+                fragment = new Journal();
             }
 
-            @Override
-            public void onTabReselected(int i, @NotNull AnimatedBottomBar.Tab tab) {
-                if (tab.getId() == R.id.bhojan) {
-                    // If the Home button is reselected, reopen the Home Fragment
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, new HomeFragment()).commit();
-                }
-            }
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
+            return true;
         });
     }
 
