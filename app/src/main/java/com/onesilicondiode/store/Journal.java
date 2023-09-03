@@ -5,17 +5,16 @@ import static android.content.Context.VIBRATOR_SERVICE;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.text.Editable;
-import android.text.TextWatcher;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -229,8 +228,9 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
         VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
         vibrator.vibrate(vibrationEffect);
     }
+
     private void editEntryVibrate() {
-        long[] pattern = {21,0,25,5,21,9,19,12,25,15,26,18,21,21,20,24,0};
+        long[] pattern = {21, 0, 25, 5, 21, 9, 19, 12, 25, 15, 26, 18, 21, 21, 20, 24, 0};
         VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
         vibrator.vibrate(vibrationEffect);
     }
