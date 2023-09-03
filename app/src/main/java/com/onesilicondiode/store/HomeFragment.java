@@ -3,6 +3,8 @@ package com.onesilicondiode.store;
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +22,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.GridView;
@@ -84,6 +87,7 @@ public class HomeFragment extends Fragment {
     private boolean isFABMenuOpen = false;
     // Add a member variable for storing the list of image URLs
     private List<String> imageUrls;
+    private boolean isFabMenuOpen = false;
     private ActivityResultLauncher<String> requestPermissionLauncher;
 
 
@@ -434,6 +438,65 @@ public class HomeFragment extends Fragment {
                     dialog.dismiss();
                 })
                 .show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        animateFabIn();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (isFabMenuOpen) {
+            animateFabOut();
+        }
+    }
+
+    private void animateFabIn() {
+        if (!isFabMenuOpen) {
+            isFabMenuOpen = true;
+            showMore.setVisibility(View.VISIBLE);
+            showMore.setScaleX(0f);
+            showMore.setScaleY(0f);
+            showMore.setAlpha(0f);
+            showMore.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .alpha(1f)
+                    .setDuration(300)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            // Animation completed
+                        }
+                    })
+                    .start();
+        }
+    }
+
+    private void animateFabOut() {
+        if (isFabMenuOpen) {
+            isFabMenuOpen = false;
+            showMore.animate()
+                    .scaleX(0f)
+                    .scaleY(0f)
+                    .alpha(0f)
+                    .setDuration(300)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            // Animation completed
+                            showMore.setVisibility(View.GONE);
+                        }
+                    })
+                    .start();
+        }
     }
 
     private class FetchTextTask extends AsyncTask<String, Void, String> {
