@@ -95,9 +95,6 @@ dependencies {
     //Double Click Listener
     implementation 'com.github.pedromassango:doubleClick:3.0'
 
-    //Bottom Animated NavBar
-    implementation 'nl.joery.animatedbottombar:library:1.1.0'
-
     //Fading Text View
     implementation 'com.github.rosenpin:fading-text-view:3.0'
 

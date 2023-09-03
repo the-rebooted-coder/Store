@@ -2,6 +2,8 @@ package com.onesilicondiode.store;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -11,6 +13,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,6 +55,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
     private DatabaseReference journalDatabase;
     private Vibrator vibrator;
     private JournalAdapter journalAdapter;
+    private boolean isFabMenuOpen = false;
     private List<JournalEntry> journalEntries = new ArrayList<>();
 
     @Nullable
@@ -132,7 +136,95 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
 
         return view;
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        animateFabIn();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (isFabMenuOpen) {
+            animateFabOut();
+        }
+    }
+    private void animateFabIn() {
+        if (!isFabMenuOpen) {
+            isFabMenuOpen = true;
+            fab.setVisibility(View.VISIBLE);
+            calendarView.setVisibility(View.VISIBLE);
+            fab.setScaleX(0f);
+            fab.setScaleY(0f);
+            fab.setAlpha(0f);
+            calendarView.setScaleX(0f);
+            calendarView.setScaleY(0f);
+            calendarView.setAlpha(0f);
+            fab.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .alpha(1f)
+                    .setDuration(300)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            // Animation completed
+                        }
+                    })
+                    .start();
+            calendarView.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .alpha(1f)
+                    .setDuration(300)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            // Animation completed
+                        }
+                    })
+                    .start();
+        }
+    }
 
+    private void animateFabOut() {
+        if (isFabMenuOpen) {
+            isFabMenuOpen = false;
+            fab.animate()
+                    .scaleX(0f)
+                    .scaleY(0f)
+                    .alpha(0f)
+                    .setDuration(300)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            // Animation completed
+                            fab.setVisibility(View.GONE);
+                        }
+                    })
+                    .start();
+            calendarView.animate()
+                    .scaleX(0f)
+                    .scaleY(0f)
+                    .alpha(0f)
+                    .setDuration(300)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            // Animation completed
+                            calendarView.setVisibility(View.GONE);
+                        }
+                    })
+                    .start();
+        }
+    }
     // Inside your Journal Fragment class
     private void showDatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
