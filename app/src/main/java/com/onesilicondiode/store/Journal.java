@@ -139,7 +139,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
 
         // Define the builder for the MaterialDatePicker
         MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
-        builder.setTitleText("View historical journal");
+        builder.setTitleText("View Historical Journal");
         builder.setSelection(calendar.getTimeInMillis());
 
         MaterialDatePicker<Long> materialDatePicker = builder.build();
