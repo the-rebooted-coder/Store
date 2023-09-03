@@ -2,6 +2,7 @@ package com.onesilicondiode.store;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -10,6 +11,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,18 +32,20 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class Journal extends Fragment implements JournalAdapter.OnItemClickListener {
-    private FloatingActionButton fab;
+    private FloatingActionButton fab, calendarView;
     private RecyclerView journalRecyclerView;
     private FirebaseUser currentUser;
     private DatabaseReference journalDatabase;
@@ -55,11 +59,17 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
         View view = inflater.inflate(R.layout.fragment_journal, container, false);
 
         fab = view.findViewById(R.id.fab);
+        calendarView = view.findViewById(R.id.selectDateButton);
         journalRecyclerView = view.findViewById(R.id.journalRecyclerView);
 
         // Initialize Firebase Database reference
         journalDatabase = FirebaseDatabase.getInstance().getReference().child("JournalEntries");
-
+        calendarView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
         // Get the current user
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (getActivity() != null) {
@@ -120,6 +130,106 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
         }
 
         return view;
+    }
+
+    // Inside your Journal Fragment class
+    private void showDatePickerDialog() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                Calendar selectedDate = Calendar.getInstance();
+                selectedDate.set(year, month, dayOfMonth);
+
+                // Convert the selected date to a string
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+                String selectedDateString = dateFormat.format(selectedDate.getTime());
+
+                // Retrieve the journal entry for the selected date from your database
+                retrieveJournalEntryForDate(selectedDateString);
+            }
+        }, year, month, day);
+        datePickerDialog.show();
+    }
+
+    // Modify the getJournalEntryForDate method
+    private void getJournalEntryForDate(String selectedDate, JournalEntryCallback callback) {
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            DatabaseReference userJournalRef = journalDatabase.child(userId);
+
+            // Create a query to search for the journal entry with the selected date
+            Query query = userJournalRef.orderByChild("date");
+
+            // Add a ValueEventListener to listen for the query result
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        // Iterate through the result to find entries with matching dates
+                        for (DataSnapshot entrySnapshot : dataSnapshot.getChildren()) {
+                            JournalEntry entry = entrySnapshot.getValue(JournalEntry.class);
+                            if (entry != null) {
+                                String entryDate = entry.getDate(); // Get the timestamp from the entry
+
+                                // Parse the entryDate into a Date object
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
+                                try {
+                                    Date parsedDate = dateFormat.parse(entryDate);
+                                    if (parsedDate != null) {
+                                        // Format the parsedDate to extract only the date part
+                                        String entryDateWithoutTime = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(parsedDate);
+
+                                        // Compare the date part of the entry with the selected date
+                                        if (selectedDate.equals(entryDateWithoutTime)) {
+                                            // Pass the found entry to the callback
+                                            callback.onJournalEntryLoaded(entry);
+                                            return; // Exit the loop after finding the entry
+                                        }
+                                    }
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                    // If no entry is found for the selected date, pass null to the callback
+                    callback.onJournalEntryLoaded(null);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle any errors here
+                }
+            });
+        }
+    }
+
+    private void retrieveJournalEntryForDate(String selectedDate) {
+        getJournalEntryForDate(selectedDate, new JournalEntryCallback() {
+            @Override
+            public void onJournalEntryLoaded(JournalEntry entry) {
+                // Display the journal entry in an AlertDialog
+                displayJournalEntry(entry);
+            }
+        });
+    }
+
+    private void displayJournalEntry(JournalEntry entry) {
+        if (entry != null) {
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
+            builder.setTitle("Journal Entry for Selected Date");
+            builder.setMessage("Title: " + entry.getTitle() + "\n\nContent: " + entry.getContent());
+            builder.setPositiveButton("OK", null);
+            builder.show();
+        } else {
+            // Handle the case where no journal entry is found for the selected date
+            Toast.makeText(requireContext(), "No entry found for the selected date", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showDeleteEntryDialog(JournalEntry entryToDelete) {
@@ -351,5 +461,9 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
         });
 
         builder.create().show();
+    }
+
+    public interface JournalEntryCallback {
+        void onJournalEntryLoaded(JournalEntry entry);
     }
 }
