@@ -2,7 +2,6 @@ package com.onesilicondiode.store;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -11,7 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.text.Editable;
+import android.text.TextWatcher;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -154,9 +154,28 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
 
         TextInputEditText titleEditText = dialogView.findViewById(R.id.titleEditText);
         TextInputEditText contentEditText = dialogView.findViewById(R.id.contentEditText);
+        contentEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Not needed
+            }
 
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // Check if the last character is not a newline, and the user pressed Enter
+                if (i2 > 0 && charSequence.charAt(i2 - 1) != '\n' && charSequence.charAt(i2 - 1) == '\n') {
+                    // Append a newline character
+                    contentEditText.append("\n");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Not needed
+            }
+        });
         builder.setView(dialogView);
-
+        builder.setCancelable(false);
         builder.setPositiveButton("Add", (dialog, which) -> {
             String title = titleEditText.getText().toString().trim();
             String content = contentEditText.getText().toString().trim();
