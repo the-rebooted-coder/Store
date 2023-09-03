@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -130,7 +131,8 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
             if (currentUser != null) {
                 String userId = currentUser.getUid();
                 DatabaseReference userJournalRef = journalDatabase.child(userId);
-                userJournalRef.child(entryToDelete.getKey()).removeValue(); // Assuming each entry has a unique key
+                userJournalRef.child(entryToDelete.getKey()).removeValue();
+                Toast.makeText(getContext(), "Entry Deleted", Toast.LENGTH_SHORT).show();
             }
             dialog.dismiss();
         });
@@ -287,7 +289,6 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
         }
     }
 
-
     private void showMessage(String message, JournalEntry existingEntry) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         builder.setTitle("Done for the day!");
@@ -298,7 +299,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
             // Pass the existing entry to the edit entry method
             editEntry(existingEntry);
         });
-        builder.setPositiveButton("OK", (dialog, which) -> {
+        builder.setPositiveButton("Okay!", (dialog, which) -> {
             dialog.dismiss();
             vibrate();
         });
