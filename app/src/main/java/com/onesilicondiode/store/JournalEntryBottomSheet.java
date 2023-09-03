@@ -46,22 +46,5 @@ public class JournalEntryBottomSheet extends BottomSheetDialogFragment {
         titleTextView.setText(title);
         contentTextView.setText(content);
         dateTextView.setText(date);
-        // Find the "Edit" FAB
-        FloatingActionButton fabEdit = view.findViewById(R.id.fabEdit);
-
-        // Set a click listener for the "Edit" FAB
-        fabEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Handle the "Edit" action here, e.g., launch an edit activity or fragment
-                // You can pass the journal entry data to the edit screen as needed
-                // Example:
-                // Intent editIntent = new Intent(getActivity(), EditJournalEntryActivity.class);
-                // editIntent.putExtra("title", title);
-                // editIntent.putExtra("content", content);
-                // editIntent.putExtra("date", date);
-                // startActivity(editIntent);
-            }
-        });
     }
 }
