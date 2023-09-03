@@ -26,6 +26,12 @@ public class JournalEntry implements Comparable<JournalEntry> {
     public String getKey() {
         return key;
     }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     public String getTitle() {
         return title;

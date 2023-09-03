@@ -15,6 +15,7 @@ import android.text.TextWatcher;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -228,6 +229,12 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
         VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
         vibrator.vibrate(vibrationEffect);
     }
+    private void editEntryVibrate() {
+        long[] pattern = {21,0,25,5,21,9,19,12,25,15,26,18,21,21,20,24,0};
+        VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
+        vibrator.vibrate(vibrationEffect);
+    }
+
     private void checkIfEntryExistsForToday() {
         if (currentUser != null) {
             String userId = currentUser.getUid();
@@ -257,7 +264,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
                                 // Check if the latest entry's date is the same as the current date
                                 if (latestDateFormatted.equals(currentDayFormatted)) {
                                     // An entry for today already exists, show a message to the user
-                                    showMessage("You've already made an entry for today. Please come back later.");
+                                    showMessage("You've already made an entry for today. Please come back later.", journalEntries.isEmpty() ? null : journalEntries.get(0));
                                 } else {
                                     // No entry for today, allow the user to add a new entry
                                     showAddEntryDialog();
@@ -279,11 +286,18 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
             });
         }
     }
-    private void showMessage(String message) {
+
+
+    private void showMessage(String message, JournalEntry existingEntry) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         builder.setTitle("Done for the day!");
         builder.setMessage(message);
-
+        builder.setNegativeButton("Edit Today's Journal", (dialog, which) -> {
+            dialog.dismiss();
+            editEntryVibrate();
+            // Pass the existing entry to the edit entry method
+            editEntry(existingEntry);
+        });
         builder.setPositiveButton("OK", (dialog, which) -> {
             dialog.dismiss();
             vibrate();
@@ -292,4 +306,49 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
         builder.create().show();
     }
 
+    private void editEntry(JournalEntry existingEntry) {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
+        builder.setTitle("Edit Journal Entry");
+
+        // Inflate the dialog layout
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_edit_entry, null);
+
+        TextInputLayout titleLayout = dialogView.findViewById(R.id.titleLayout);
+        TextInputLayout contentLayout = dialogView.findViewById(R.id.contentLayout);
+
+        TextInputEditText titleEditText = dialogView.findViewById(R.id.titleEditText);
+        TextInputEditText contentEditText = dialogView.findViewById(R.id.contentEditText);
+
+        // Set the existing entry data in the EditText fields
+        titleEditText.setText(existingEntry.getTitle());
+        contentEditText.setText(existingEntry.getContent());
+
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String title = titleEditText.getText().toString().trim();
+            String content = contentEditText.getText().toString().trim();
+            if (!title.isEmpty() && !content.isEmpty()) {
+                // Update the existing entry with the new data
+                existingEntry.setTitle(title);
+                existingEntry.setContent(content);
+
+                // Save the updated entry to Firebase
+                if (currentUser != null) {
+                    String userId = currentUser.getUid();
+                    DatabaseReference userJournalRef = journalDatabase.child(userId);
+                    userJournalRef.child(existingEntry.getKey()).setValue(existingEntry);
+                }
+            } else if (title.isEmpty()) {
+                titleLayout.setError("Title is Required");
+            } else if (content.isEmpty()) {
+                contentLayout.setError("Content is Required");
+            }
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            dialog.dismiss();
+        });
+
+        builder.create().show();
+    }
 }
