@@ -41,6 +41,7 @@ import androidx.fragment.app.Fragment;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -395,56 +396,44 @@ public class HomeFragment extends Fragment {
 
     private void showReloadDialog() {
         int nightModeFlags =
-                this.getResources().getConfiguration().uiMode &
+                getResources().getConfiguration().uiMode &
                         Configuration.UI_MODE_NIGHT_MASK;
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Choose Theme for Store"); // Set the dialog title
-        // Set the positive button and its click listener
-        builder.setPositiveButton("LIGHT", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (nightModeFlags) {
-                    case Configuration.UI_MODE_NIGHT_YES:
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                        SharedPreferences.Editor editor = getContext().getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
-                        editor.putString("uiMode", "Light");
-                        editor.apply();
-                        break;
-                    case Configuration.UI_MODE_NIGHT_NO:
-                        Toast.makeText(getContext(), "Already in Light Mode ☀️", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                        break;
-                    default:
-                        Toast.makeText(getContext(), "Choose a theme for Store", Toast.LENGTH_SHORT).show();
-                }
-                dialog.dismiss(); // Dismiss the dialog
-            }
-        });
-
-        // Set the negative button and its click listener
-        builder.setNegativeButton("DARK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (nightModeFlags) {
-                    case Configuration.UI_MODE_NIGHT_YES:
-                        Toast.makeText(getContext(), "Already in Dark Mode \uD83C\uDF19", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                        break;
-                    case Configuration.UI_MODE_NIGHT_NO:
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                        SharedPreferences.Editor editor = getContext().getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
-                        editor.putString("uiMode", "Dark");
-                        editor.apply();
-                        break;
-                    default:
-                        Toast.makeText(getContext(), "Choose a theme", Toast.LENGTH_SHORT).show();
-                }
-                dialog.dismiss(); // Dismiss the dialog
-            }
-        });
-        // Create and show the AlertDialog
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Choose Theme for Store")
+                .setPositiveButton("LIGHT", (dialog, which) -> {
+                    switch (nightModeFlags) {
+                        case Configuration.UI_MODE_NIGHT_YES:
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                            SharedPreferences.Editor editor = requireContext().getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
+                            editor.putString("uiMode", "Light");
+                            editor.apply();
+                            break;
+                        case Configuration.UI_MODE_NIGHT_NO:
+                            Toast.makeText(requireContext(), "Already in Light Mode ☀️", Toast.LENGTH_SHORT).show();
+                            break;
+                        default:
+                            Toast.makeText(requireContext(), "Choose a theme for Store", Toast.LENGTH_SHORT).show();
+                    }
+                    dialog.dismiss();
+                })
+                .setNegativeButton("DARK", (dialog, which) -> {
+                    switch (nightModeFlags) {
+                        case Configuration.UI_MODE_NIGHT_YES:
+                            Toast.makeText(requireContext(), "Already in Dark Mode \uD83C\uDF19", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            break;
+                        case Configuration.UI_MODE_NIGHT_NO:
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                            SharedPreferences.Editor editor = requireContext().getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
+                            editor.putString("uiMode", "Dark");
+                            editor.apply();
+                            break;
+                        default:
+                            Toast.makeText(requireContext(), "Choose a theme", Toast.LENGTH_SHORT).show();
+                    }
+                    dialog.dismiss();
+                })
+                .show();
     }
 
     private class FetchTextTask extends AsyncTask<String, Void, String> {
@@ -466,6 +455,7 @@ public class HomeFragment extends Fragment {
             }
             return result;
         }
+
         @Override
         protected void onPostExecute(String changelog) {
             super.onPostExecute(changelog);
@@ -474,7 +464,7 @@ public class HomeFragment extends Fragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("What's New in Store");
                 builder.setIcon(R.drawable.update_icon);
-                builder.setMessage(changelog+"\n\nTap on Begin to Start the Update Download."); // Use the changelog text as the message
+                builder.setMessage(changelog + "\n\nTap on Begin to Start the Update Download."); // Use the changelog text as the message
                 builder.setPositiveButton("BEGIN", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
