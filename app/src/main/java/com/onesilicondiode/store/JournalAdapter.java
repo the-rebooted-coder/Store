@@ -1,7 +1,12 @@
 package com.onesilicondiode.store;
 
+import static android.content.Context.VIBRATOR_SERVICE;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +23,15 @@ import java.util.Locale;
 public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHolder> {
     private List<JournalEntry> journalEntries;
     private OnItemClickListener onItemClickListener;
-
     private Context context;
+    private Vibrator vibrator;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
 
     public JournalAdapter(Context context, List<JournalEntry> journalEntries, OnItemClickListener onItemClickListener) {
         this.context = context;
         this.journalEntries = journalEntries;
         this.onItemClickListener = onItemClickListener;
+        vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE); // Initialize vibrator here
     }
 
     @NonNull
@@ -46,7 +52,6 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
             try {
                 Date date = dateFormat.parse(entry.getDate());
-
                 // Format the date for display
                 SimpleDateFormat displayDateFormat = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
                 String formattedDate = displayDateFormat.format(date);
@@ -55,13 +60,16 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            holder.itemView.setOnLongClickListener(v -> {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onDeleteClicked(entry);
+                }
+                return true;
+            });
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onLongClick(View v) {
-                    if (onItemClickListener != null) {
-                        onItemClickListener.onDeleteClicked(entry);
-                    }
-                    return true;
+                public void onClick(View v) {
+                    showBottomSheet(entry.getTitle(), entry.getContent(), entry.getDate());
                 }
             });
         }
@@ -69,12 +77,21 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
     public interface OnItemClickListener {
         void onDeleteClicked(JournalEntry entry);
     }
+    private void showBottomSheet(String title, String content, String date) {
+        bottomSheetVibrate();
+        JournalEntryBottomSheet bottomSheet = new JournalEntryBottomSheet(title, content, date);
+        bottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), bottomSheet.getTag());
+    }
 
     @Override
     public int getItemCount() {
         return journalEntries.size();
     }
-
+    private void bottomSheetVibrate() {
+        long[] pattern = {21, 0, 25, 5, 21, 9, 19, 12, 25, 15, 26, 18, 21, 21, 20, 24, 0};
+        VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
+        vibrator.vibrate(vibrationEffect);
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
         TextView contentTextView;
