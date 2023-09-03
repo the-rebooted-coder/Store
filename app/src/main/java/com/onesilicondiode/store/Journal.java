@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -135,25 +136,27 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
     // Inside your Journal Fragment class
     private void showDatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                Calendar selectedDate = Calendar.getInstance();
-                selectedDate.set(year, month, dayOfMonth);
+        // Define the builder for the MaterialDatePicker
+        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
+        builder.setTitleText("View historical journal");
+        builder.setSelection(calendar.getTimeInMillis());
 
-                // Convert the selected date to a string
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-                String selectedDateString = dateFormat.format(selectedDate.getTime());
+        MaterialDatePicker<Long> materialDatePicker = builder.build();
 
-                // Retrieve the journal entry for the selected date from your database
-                retrieveJournalEntryForDate(selectedDateString);
-            }
-        }, year, month, day);
-        datePickerDialog.show();
+        // Set up the listener for when a date is selected
+        materialDatePicker.addOnPositiveButtonClickListener(selection -> {
+            // Convert the selected date to a string
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+            Date selectedDate = new Date(selection);
+            String selectedDateString = dateFormat.format(selectedDate);
+
+            // Retrieve the journal entry for the selected date from your database
+            retrieveJournalEntryForDate(selectedDateString);
+        });
+
+        // Show the MaterialDatePicker
+        materialDatePicker.show(getChildFragmentManager(), "DATE_PICKER_TAG");
     }
 
     // Modify the getJournalEntryForDate method
