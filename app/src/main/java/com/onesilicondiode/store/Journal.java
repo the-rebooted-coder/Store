@@ -213,19 +213,20 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
         getJournalEntryForDate(selectedDate, new JournalEntryCallback() {
             @Override
             public void onJournalEntryLoaded(JournalEntry entry) {
-                // Display the journal entry in an AlertDialog
-                displayJournalEntry(entry);
+                // Display the journal entry using a Bottom Sheet Fragment
+                showJournalEntryBottomSheet(entry);
             }
         });
     }
 
-    private void displayJournalEntry(JournalEntry entry) {
+    private void showJournalEntryBottomSheet(JournalEntry entry) {
         if (entry != null) {
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
-            builder.setTitle("Journal Entry for Selected Date");
-            builder.setMessage("Title: " + entry.getTitle() + "\n\nContent: " + entry.getContent());
-            builder.setPositiveButton("OK", null);
-            builder.show();
+            String title = entry.getTitle();
+            String content = entry.getContent();
+            String date = entry.getDate();
+            vibrateToEnter();
+            JournalEntryBottomSheet bottomSheet = new JournalEntryBottomSheet(title, content, date);
+            bottomSheet.show(getChildFragmentManager(), bottomSheet.getTag());
         } else {
             // Handle the case where no journal entry is found for the selected date
             Toast.makeText(requireContext(), "No entry found for the selected date", Toast.LENGTH_SHORT).show();

@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:padding="5dp"
+        android:padding="15dp"
         android:textSize="16sp"
         android:text="@string/ask_to_write"
         android:layout_centerInParent="true"
@@ -30,14 +30,14 @@
         android:src="@drawable/arrow"
         android:visibility="gone"
         />
-    <!-- FloatingActionButton (FAB) to add journal entries -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="90dp"
         android:src="@drawable/ic_add"/>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/selectDateButton"
@@ -45,6 +45,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="100dp"
-        android:src="@drawable/more"/>
+        android:layout_margin="16dp"
+        android:src="@drawable/calendar"/>
 </RelativeLayout>
