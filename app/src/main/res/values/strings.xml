@@ -65,4 +65,5 @@
     <string name="browse">Browse</string>
     <string name="journal">Journal</string>
     <string name="ask_to_write">Start writing about your day by tapping the pencil icon.\n\nRemember you can write only 10 lines to describe your day, make them worth it.</string>
+    <string name="new_journal">New Journal</string>
 </resources>

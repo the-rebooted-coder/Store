@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp">
 
     <!-- RecyclerView to display journal entries -->
@@ -30,21 +31,23 @@
         android:src="@drawable/arrow"
         android:visibility="gone"
         />
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="90dp"
-        android:src="@drawable/ic_add"/>
+        android:layout_margin="16dp"
+        android:drawableTintMode="multiply"
+        app:icon="@drawable/ic_add"
+        android:text="@string/new_journal" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/selectDateButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="80dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"
         android:src="@drawable/calendar"/>
 </RelativeLayout>

@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -49,7 +50,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class Journal extends Fragment implements JournalAdapter.OnItemClickListener {
-    private FloatingActionButton fab, calendarView;
+    private ExtendedFloatingActionButton fab;
+    private FloatingActionButton calendarView;
     private RecyclerView journalRecyclerView;
     private FirebaseUser currentUser;
     private DatabaseReference journalDatabase;
