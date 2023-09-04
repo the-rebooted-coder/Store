@@ -1,9 +1,5 @@
 package com.onesilicondiode.store;
 
-import static android.content.Context.VIBRATOR_SERVICE;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -13,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -74,9 +72,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
             });
         }
     }
-    public interface OnItemClickListener {
-        void onDeleteClicked(JournalEntry entry);
-    }
+
     private void showBottomSheet(String title, String content, String date) {
         bottomSheetVibrate();
         JournalEntryBottomSheet bottomSheet = new JournalEntryBottomSheet(title, content, date);
@@ -87,11 +83,17 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
     public int getItemCount() {
         return journalEntries.size();
     }
+
     private void bottomSheetVibrate() {
         long[] pattern = {21, 0, 25, 5, 21, 9, 19, 12, 25, 15, 26, 18, 21, 21, 20, 24, 0};
         VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
         vibrator.vibrate(vibrationEffect);
     }
+
+    public interface OnItemClickListener {
+        void onDeleteClicked(JournalEntry entry);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
         TextView contentTextView;

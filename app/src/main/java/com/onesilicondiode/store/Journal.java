@@ -4,7 +4,6 @@ import static android.content.Context.VIBRATOR_SERVICE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -14,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
