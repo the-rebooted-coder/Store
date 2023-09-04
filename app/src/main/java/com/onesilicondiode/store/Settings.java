@@ -36,7 +36,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class Settings extends Fragment {
     private TextView accountHolderName;
     private TextView accountHolderEmail;
-    private MaterialButton signOutBtn;
+    private MaterialButton signOutBtn, editPin;
 
     private ImageView userAccImage;
     private FirebaseAuth mAuth;
@@ -52,6 +52,7 @@ public class Settings extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
         accountHolderName = rootView.findViewById(R.id.accountHolderName);
         accountHolderEmail = rootView.findViewById(R.id.accountHolderEmail);
+        editPin = rootView.findViewById(R.id.editPin);
         signOutBtn = rootView.findViewById(R.id.signOutBtn);
         userAccImage = rootView.findViewById(R.id.userAccImage);
         secureAppSwitch = rootView.findViewById(R.id.secureApp);
@@ -63,18 +64,26 @@ public class Settings extends Fragment {
         FirebaseUser user = mAuth.getCurrentUser();
         boolean isSecureAppEnabled = sharedPreferences.getBoolean("secureAppEnabled", false);
         secureAppSwitch.setChecked(isSecureAppEnabled);
-        secureAppSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    // Check if a PIN is already set
-                    String savedPin = sharedPreferences.getString("appPin", "");
-                    if (savedPin.isEmpty()) {
-                        showSetPinDialog();
-                        secureAppSwitch.setChecked(false);
-                    }
+        editPin.setVisibility(isSecureAppEnabled ? View.VISIBLE : View.GONE);
+        secureAppSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Check if a PIN is already set
+                String savedPin = sharedPreferences.getString("appPin", "");
+                if (savedPin.isEmpty()) {
+                    showSetPinDialog();
+                    vibrate();
                 }
+                editPin.setVisibility(View.VISIBLE); // Show the "Edit Pin" button
+            } else {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("secureAppEnabled", false); // Set secureAppEnabled to true
+                editor.apply();
+                editPin.setVisibility(View.GONE); // Hide the "Edit Pin" button
             }
+        });
+        editPin.setOnClickListener(view -> {
+            vibrate();
+            showSetPinDialog();
         });
         if (user != null) {
             String displayName = user.getDisplayName();
