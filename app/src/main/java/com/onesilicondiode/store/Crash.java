@@ -29,6 +29,7 @@ public class Crash extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        showBottomSheet();
         fingerprintManager = FingerprintManagerCompat.from(this);
         if (fingerprintManager.isHardwareDetected() && fingerprintManager.hasEnrolledFingerprints()) {
             authenticateWithFingerprint();
@@ -72,6 +73,10 @@ public class Crash extends AppCompatActivity {
         // Create and show the dialog
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+    private void showBottomSheet() {
+        BottomSheetCrash bottomSheetFragment = new BottomSheetCrash();
+        bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
     }
     private void authenticateWithFingerprint() {
         try {

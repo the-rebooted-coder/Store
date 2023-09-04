@@ -68,4 +68,7 @@
     <string name="new_journal">New Journal</string>
     <string name="new_item">New Item</string>
     <string name="download">Save to Phone</string>
+    <string name="to_continue_please_authenticate_using_pin">To continue, please authenticate using PIN</string>
+    <string name="store_is_locked">Store is Locked</string>
+    <string name="unlock">Unlock</string>
 </resources>
