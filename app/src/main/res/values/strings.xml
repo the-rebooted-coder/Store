@@ -71,4 +71,6 @@
     <string name="to_continue_please_authenticate_using_pin">To continue, please authenticate using PIN</string>
     <string name="store_is_locked">Store is Locked</string>
     <string name="unlock">Unlock</string>
+    <string name="or">OR</string>
+    <string name="use_biometrics">Use Biometrics</string>
 </resources>
