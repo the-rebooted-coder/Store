@@ -36,7 +36,7 @@
             android:id="@+id/myGridView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:numColumns="2" />
+            android:numColumns="3" />
     </LinearLayout>
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabUpload"
