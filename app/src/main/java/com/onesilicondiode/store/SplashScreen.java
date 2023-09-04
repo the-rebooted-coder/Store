@@ -90,9 +90,7 @@ public class SplashScreen extends AppCompatActivity {
 
     private void fireSplashScreen() {
         int splash_screen_time_out = 2000;
-        new Handler().postDelayed(() -> {
-            check();
-        }, splash_screen_time_out);
+        new Handler().postDelayed(this::check, splash_screen_time_out);
     }
 
     private void check() {

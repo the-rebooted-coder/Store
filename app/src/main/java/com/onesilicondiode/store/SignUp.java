@@ -28,6 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,15 +36,15 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.tomer.fadingtextview.FadingTextView;
 
 public class SignUp extends AppCompatActivity {
+    public static final String UI_MODE = "uiMode";
+    private final int RC_SIGN_IN = 1;
+    LottieAnimationView food_load;
+    AlertDialog alertDialog1;
+    Button themeChooser;
     private Button signInButton;
     private GoogleSignInClient mGoogleSignInClient;
     private String TAG = "Login";
     private FirebaseAuth mAuth;
-    LottieAnimationView food_load;
-    AlertDialog alertDialog1;
-    private final int RC_SIGN_IN = 1;
-    public static final String UI_MODE = "uiMode";
-    Button themeChooser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +65,11 @@ public class SignUp extends AppCompatActivity {
         themeChooser = findViewById(R.id.themeChoose);
         themeChooser.setOnClickListener(v -> {
             vibrateDevice();
-            CreateAlertDialogWithRadioButtonGroup();
+            CreateMaterialAlertDialogWithRadioButtonGroup();
         });
     }
 
-    public void CreateAlertDialogWithRadioButtonGroup() {
+    public void CreateMaterialAlertDialogWithRadioButtonGroup() {
         LottieAnimationView lottieAnimationView;
         lottieAnimationView = findViewById(R.id.animation_view_theme);
         FadingTextView fadingTextView;
@@ -76,77 +77,64 @@ public class SignUp extends AppCompatActivity {
         int nightModeFlags =
                 this.getResources().getConfiguration().uiMode &
                         Configuration.UI_MODE_NIGHT_MASK;
-        AlertDialog.Builder builder = new AlertDialog.Builder(SignUp.this);
+
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
 
         builder.setTitle("Choose Theme for Store");
         builder.setMessage("You can change it later inside the app!");
-        builder.setPositiveButton("LIGHT", (dialog, which) -> {
-            switch (nightModeFlags) {
-                case Configuration.UI_MODE_NIGHT_YES:
-                    vibrateDevice();
-                    signInButton.setVisibility(View.INVISIBLE);
-                    fadingTextView.setVisibility(View.INVISIBLE);
-                    fadingTextView.pause();
-                    lottieAnimationView.setVisibility(View.VISIBLE);
-                    lottieAnimationView.setAnimation("light_mode.json");
-                    lottieAnimationView.playAnimation();
-                    alertDialog1.dismiss();
-                    int theme_timeout = 2000;
-                    new Handler().postDelayed(() -> {
-                        lottieAnimationView.cancelAnimation();
-                        lottieAnimationView.setVisibility(View.GONE);
-                        signInButton.setVisibility(View.VISIBLE);
-                        fadingTextView.resume();
-                        fadingTextView.setVisibility(View.VISIBLE);
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                        SharedPreferences.Editor editor = getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
-                        editor.putString("uiMode","Light");
-                        editor.apply();
-                    }, theme_timeout);
-                    break;
-                case Configuration.UI_MODE_NIGHT_NO:
-                    Toast.makeText(getApplicationContext(),"Already in Light Mode ☀️",Toast.LENGTH_SHORT).show();
-                    alertDialog1.dismiss();
-                    break;
-                default:
-                    Toast.makeText(getApplicationContext(),"Choose a theme",Toast.LENGTH_SHORT).show();
-            }
-        });
-        builder.setNegativeButton("DARK", new DialogInterface.OnClickListener() {
+
+        builder.setPositiveButton("Dark", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (nightModeFlags) {
-                    case Configuration.UI_MODE_NIGHT_YES:
-                        Toast.makeText(getApplicationContext(),"Already in Dark Mode \uD83C\uDF19",Toast.LENGTH_SHORT).show();
-                        alertDialog1.dismiss();
-                        break;
-                    case Configuration.UI_MODE_NIGHT_NO:
-                        vibrateDevice();
-                        signInButton.setVisibility(View.INVISIBLE);
-                        fadingTextView.pause();
-                        fadingTextView.setVisibility(View.INVISIBLE);
-                        lottieAnimationView.setVisibility(View.VISIBLE);
-                        lottieAnimationView.setAnimation("dark_mode.json");
-                        lottieAnimationView.playAnimation();
-                        alertDialog1.dismiss();
-                        int theme_timeout = 2000;
-                        new Handler().postDelayed(() -> {
-                            lottieAnimationView.cancelAnimation();
-                            lottieAnimationView.setVisibility(View.GONE);
-                            fadingTextView.resume();
-                            signInButton.setVisibility(View.VISIBLE);
-                            fadingTextView.setVisibility(View.VISIBLE);
-                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                            SharedPreferences.Editor editor = getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
-                            editor.putString("uiMode","Dark");
-                            editor.apply();
-                        }, theme_timeout);
-                        break;
-                    default:
-                        Toast.makeText(getApplicationContext(),"Choose a theme",Toast.LENGTH_SHORT).show();
-                }
+                vibrateDevice();
+                signInButton.setVisibility(View.INVISIBLE);
+                fadingTextView.pause();
+                fadingTextView.setVisibility(View.INVISIBLE);
+                lottieAnimationView.setVisibility(View.VISIBLE);
+                lottieAnimationView.setAnimation("dark_mode.json");
+                lottieAnimationView.playAnimation();
+                alertDialog1.dismiss();
+                int theme_timeout = 2000;
+                new Handler().postDelayed(() -> {
+                    lottieAnimationView.cancelAnimation();
+                    lottieAnimationView.setVisibility(View.GONE);
+                    fadingTextView.resume();
+                    signInButton.setVisibility(View.VISIBLE);
+                    fadingTextView.setVisibility(View.VISIBLE);
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    SharedPreferences.Editor editor = getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
+                    editor.putString("uiMode", "Dark");
+                    editor.apply();
+                }, theme_timeout);
             }
         });
+
+        builder.setNegativeButton("Light", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                vibrateDevice();
+                signInButton.setVisibility(View.INVISIBLE);
+                fadingTextView.setVisibility(View.INVISIBLE);
+                fadingTextView.pause();
+                lottieAnimationView.setVisibility(View.VISIBLE);
+                lottieAnimationView.setAnimation("light_mode.json");
+                lottieAnimationView.playAnimation();
+                alertDialog1.dismiss();
+                int theme_timeout = 2000;
+                new Handler().postDelayed(() -> {
+                    lottieAnimationView.cancelAnimation();
+                    lottieAnimationView.setVisibility(View.GONE);
+                    signInButton.setVisibility(View.VISIBLE);
+                    fadingTextView.resume();
+                    fadingTextView.setVisibility(View.VISIBLE);
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    SharedPreferences.Editor editor = getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
+                    editor.putString("uiMode", "Light");
+                    editor.apply();
+                }, theme_timeout);
+            }
+        });
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             builder.setNeutralButton("System Default", new DialogInterface.OnClickListener() {
                 @Override
@@ -154,7 +142,7 @@ public class SignUp extends AppCompatActivity {
                     vibrateDevice();
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
                     SharedPreferences.Editor editor = getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
-                    editor.putString("uiMode","System");
+                    editor.putString("uiMode", "System");
                     editor.apply();
                     alertDialog1.dismiss();
                 }
@@ -162,7 +150,6 @@ public class SignUp extends AppCompatActivity {
         }
         alertDialog1 = builder.create();
         alertDialog1.show();
-
     }
 
     private void signIn() {
@@ -176,21 +163,19 @@ public class SignUp extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (haveNetwork()){
+        if (haveNetwork()) {
             if (resultCode != RESULT_CANCELED) {
                 if (requestCode == RC_SIGN_IN) {
                     Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                     handleSignInResult(task);
                 }
-            }
-            else {
+            } else {
                 food_load.setVisibility(View.INVISIBLE);
                 signInButton.setVisibility(View.VISIBLE);
-                Toast.makeText(this,"User Cancelled the Login",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "User Cancelled the Login", Toast.LENGTH_SHORT).show();
             }
-        }
-        else {
-            Toast.makeText(this,"No internet connection",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
             food_load.setVisibility(View.INVISIBLE);
             signInButton.setVisibility(View.VISIBLE);
         }
@@ -202,7 +187,7 @@ public class SignUp extends AppCompatActivity {
             GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
             if (account != null) {
                 food_load.setVisibility(View.INVISIBLE);
-                Intent i=new Intent(this,Landing.class);
+                Intent i = new Intent(this, Landing.class);
                 startActivity(i);
                 finish();
             }
@@ -214,6 +199,7 @@ public class SignUp extends AppCompatActivity {
             food_load.setVisibility(View.INVISIBLE);
         }
     }
+
     private void vibrateDevice() {
         Vibrator v3 = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -223,6 +209,7 @@ public class SignUp extends AppCompatActivity {
             v3.vibrate(25);
         }
     }
+
     private void FirebaseGoogleAuth(GoogleSignInAccount acct) {
         AuthCredential authCredential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(authCredential).addOnCompleteListener(this, task -> {
@@ -235,6 +222,7 @@ public class SignUp extends AppCompatActivity {
             }
         });
     }
+
     //Network Checking Boolean
     private boolean haveNetwork() {
         boolean have_WIFI = false;
@@ -250,6 +238,6 @@ public class SignUp extends AppCompatActivity {
                 if (info.isConnected())
                     have_MobileData = true;
         }
-        return have_MobileData||have_WIFI;
+        return have_MobileData || have_WIFI;
     }
 }

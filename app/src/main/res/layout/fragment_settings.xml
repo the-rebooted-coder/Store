@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".Settings">
 
@@ -23,7 +24,7 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="8dp"
                 android:text="Account"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
 
             <!-- Divider for Section 1 -->
             <com.google.android.material.divider.MaterialDivider
@@ -34,7 +35,53 @@
                 android:background="?android:attr/dividerVertical" />
 
             <!-- Settings items for Section 1 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="8dp"
+                android:text="@string/logged_in_store_as"
+                android:textSize="14sp" />
 
+            <TextView
+                android:id="@+id/accountHolderName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/productsans"
+                android:paddingStart="16dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="8dp"
+                android:text="Spandan Saxena"
+                android:textSize="14sp" />
+
+
+
+            <TextView
+                android:id="@+id/accountHolderEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/productsans"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="8dp"
+                android:text="connectwithspandan@gmail.com"
+                android:textSize="14sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/signOutBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/logout"
+                android:textColor="@null"
+                app:iconTint="@null"
+                app:icon="@drawable/logout_24"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp" />
             <!-- Section 2 Header -->
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
@@ -64,7 +111,7 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="8dp"
                 android:text="Appearance"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
 
             <!-- Divider for Section 3 -->
             <com.google.android.material.divider.MaterialDivider
@@ -84,7 +131,7 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="8dp"
                 android:text="Miscellaneous"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
 
             <!-- Divider for Section 4 -->
             <com.google.android.material.divider.MaterialDivider
@@ -104,7 +151,7 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="8dp"
                 android:text="About"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
 
             <!-- Settings items for Section 5 -->
         </LinearLayout>
