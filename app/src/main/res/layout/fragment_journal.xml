@@ -38,6 +38,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp"
+        android:tooltipText="Create new Entry"
         android:drawableTintMode="multiply"
         app:icon="@drawable/ic_add"
         android:text="@string/new_journal" />
@@ -47,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="80dp"
+        android:tooltipText="View past entries"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:src="@drawable/calendar"/>
