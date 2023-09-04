@@ -2,6 +2,8 @@ package com.onesilicondiode.store;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 
+import android.animation.AnimatorInflater;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -62,6 +64,7 @@ public class Settings extends Fragment {
         }
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
+        ObjectAnimator slideDownAnimation = (ObjectAnimator) AnimatorInflater.loadAnimator(requireContext(), R.animator.slide_down);
         boolean isSecureAppEnabled = sharedPreferences.getBoolean("secureAppEnabled", false);
         secureAppSwitch.setChecked(isSecureAppEnabled);
         editPin.setVisibility(isSecureAppEnabled ? View.VISIBLE : View.GONE); // Set initial visibility
@@ -72,15 +75,15 @@ public class Settings extends Fragment {
                 if (savedPin.isEmpty()) {
                     showSetPinDialog();
                     vibrate();
-                }
-                else {
+                } else {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putBoolean("secureAppEnabled", true); // Set secureAppEnabled to true
                     editor.commit();
                 }
                 editPin.setVisibility(View.VISIBLE);
-            }
-            else {
+                slideDownAnimation.setTarget(editPin);
+                slideDownAnimation.start();
+            } else {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("secureAppEnabled", false); // Set secureAppEnabled to true
                 editor.commit();
@@ -125,6 +128,7 @@ public class Settings extends Fragment {
         VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
         vibrator.vibrate(vibrationEffect);
     }
+
     private void showSetPinDialog() {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_set_pin, null);
@@ -163,6 +167,7 @@ public class Settings extends Fragment {
         // Validate the PIN (4 digits)
         return pin.length() == 4 && pin.matches("\\d{4}");
     }
+
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
