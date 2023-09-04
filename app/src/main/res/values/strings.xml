@@ -74,4 +74,7 @@
     <string name="or">OR</string>
     <string name="use_biometrics">Use Biometrics</string>
     <string name="unlock_store">Unlock Store</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="preferences">Preferences</string>
 </resources>

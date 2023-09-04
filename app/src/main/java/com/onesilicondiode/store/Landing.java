@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class Landing extends AppCompatActivity {
-    private BottomNavigationView bottomNavigationView;
     private Vibrator vibrator;
 
 
@@ -28,7 +27,7 @@ public class Landing extends AppCompatActivity {
             // Show an alert dialog for the first-time users
             showFirstTimeAlertDialog();
         }
-        bottomNavigationView = findViewById(R.id.bottomNavigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, new HomeFragment()).commit();
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -39,6 +38,9 @@ public class Landing extends AppCompatActivity {
             } else if (item.getItemId() == R.id.journal) {
                 vibrate();
                 fragment = new Journal();
+            } else if (item.getItemId() == R.id.preferences) {
+                vibrate();
+                fragment = new Settings();
             }
 
             getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment).commit();
@@ -83,10 +85,9 @@ public class Landing extends AppCompatActivity {
 
     private void saveFirstTimePreference() {
         SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-
-        // Set the "firstTime" preference to true
         preferences.edit().putBoolean("firstTime", true).apply();
     }
+
     private void vibrate() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             vibrator.vibrate(
@@ -95,7 +96,7 @@ public class Landing extends AppCompatActivity {
                             .addPrimitive(VibrationEffect.Composition.PRIMITIVE_QUICK_FALL, 0.3f)
                             .compose());
         } else {
-            long[] pattern = {5,0,5,0,5,1,5,1,5,2,5,2,5,3,5,4,5,4,5,5,5,6,5,6,5,7,5,8,5,8,5,9,5,10,5,10,5,11,5,11,5,12,5,13,5,13,5,14,5,14,5,15,5,15,5,16,5,16,5,17,5,17,5,17,5,18,5,18,5,19,5,19,5,19,5,20,5,20,5,20,5,21,5,21,5,21,5,22,5,22,5,22,5,22,5,23,5,23,5,23,5,23,5,23,5,24,5,24,5,24,5,24,5,24,5,24,5,24,5,24,5,25,5,25,5,25,5,25,5,25,5,25,5,25,5,25,5,25,5,25,5};
+            long[] pattern = {5, 0, 5, 0, 5, 1, 5, 1, 5, 2, 5, 2, 5, 3, 5, 4, 5, 4, 5, 5, 5, 6, 5, 6, 5, 7, 5, 8, 5, 8, 5, 9, 5, 10, 5, 10, 5, 11, 5, 11, 5, 12, 5, 13, 5, 13, 5, 14, 5, 14, 5, 15, 5, 15, 5, 16, 5, 16, 5, 17, 5, 17, 5, 17, 5, 18, 5, 18, 5, 19, 5, 19, 5, 19, 5, 20, 5, 20, 5, 20, 5, 21, 5, 21, 5, 21, 5, 22, 5, 22, 5, 22, 5, 22, 5, 23, 5, 23, 5, 23, 5, 23, 5, 23, 5, 24, 5, 24, 5, 24, 5, 24, 5, 24, 5, 24, 5, 24, 5, 24, 5, 25, 5, 25, 5, 25, 5, 25, 5, 25, 5, 25, 5, 25, 5, 25, 5, 25, 5, 25, 5};
 
             VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
             vibrator.vibrate(vibrationEffect);
