@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -29,7 +30,7 @@ public class Settings extends Fragment {
     private TextView accountHolderEmail;
     private MaterialButton signOutBtn;
 
-
+    private ImageView userAccImage;
     private FirebaseAuth mAuth;
     private Vibrator vibrator;
 
@@ -42,6 +43,7 @@ public class Settings extends Fragment {
         accountHolderName = rootView.findViewById(R.id.accountHolderName);
         accountHolderEmail = rootView.findViewById(R.id.accountHolderEmail);
         signOutBtn = rootView.findViewById(R.id.signOutBtn);
+        userAccImage = rootView.findViewById(R.id.userAccImage);
         if (getActivity() != null) {
             vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
         }
@@ -51,9 +53,18 @@ public class Settings extends Fragment {
         if (user != null) {
             String displayName = user.getDisplayName();
             String email = user.getEmail();
+
             // Set the user's name and email in the TextViews
             accountHolderName.setText(displayName);
             accountHolderEmail.setText(email);
+
+            // Load and set the user's profile picture using Glide or any other image loading library
+            String photoUrl = user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null;
+            if (photoUrl != null) {
+                Glide.with(requireContext())
+                        .load(photoUrl)
+                        .into(userAccImage);
+            }
         }
         signOutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,11 +78,13 @@ public class Settings extends Fragment {
 
         return rootView;
     }
+
     private void vibrate() {
-        long[] pattern = {23,0,17,4,15,11,19,15,18,13,16,8,20,2,0,0,14,0,14,5,0,17,16};
+        long[] pattern = {23, 0, 17, 4, 15, 11, 19, 15, 18, 13, 16, 8, 20, 2, 0, 0, 14, 0, 14, 5, 0, 17, 16};
         VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
         vibrator.vibrate(vibrationEffect);
     }
+
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -85,7 +98,7 @@ public class Settings extends Fragment {
                 // Sign-out successful, redirect to SignUp class
                 Intent intent = new Intent(getActivity(), SplashScreen.class);
                 startActivity(intent);
-                if (getActivity()!= null){
+                if (getActivity() != null) {
                     getActivity().finish();
                 }
             } else {

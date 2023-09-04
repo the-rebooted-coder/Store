@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".Settings">
 
@@ -35,53 +35,75 @@
                 android:background="?android:attr/dividerVertical" />
 
             <!-- Settings items for Section 1 -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="16dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="8dp"
-                android:text="@string/logged_in_store_as"
-                android:textSize="14sp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/accountHolderName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/productsans"
-                android:paddingStart="16dp"
-                android:paddingTop="10dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="8dp"
-                android:text="Spandan Saxena"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/dummyTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="8dp"
+                    android:text="@string/logged_in_store_as"
+                    android:textSize="16sp" />
 
+                <TextView
+                    android:id="@+id/accountHolderName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/dummyTitle"
+                    android:fontFamily="@font/productsans"
+                    android:paddingStart="16dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="8dp"
+                    android:text="Spandan Saxena"
+                    android:textSize="15sp" />
 
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="16dp">
 
-            <TextView
-                android:id="@+id/accountHolderEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/productsans"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="8dp"
-                android:text="connectwithspandan@gmail.com"
-                android:textSize="14sp" />
+                    <ImageView
+                        android:id="@+id/userAccImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/accountHolderEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/accountHolderName"
+                    android:fontFamily="@font/productsans"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="8dp"
+                    android:text="connectwithspandan@gmail.com"
+                    android:textSize="15sp" />
+            </RelativeLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/signOutBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="@string/logout"
-                android:textColor="@null"
-                app:iconTint="@null"
-                app:icon="@drawable/logout_24"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp" />
+                android:layout_marginBottom="8dp"
+                android:text="@string/logout"
+                android:textColor="@null"
+                app:icon="@drawable/logout_24"
+                app:iconTint="@null" />
             <!-- Section 2 Header -->
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
