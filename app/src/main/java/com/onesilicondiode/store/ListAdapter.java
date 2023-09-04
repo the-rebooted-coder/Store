@@ -64,7 +64,6 @@ public class ListAdapter extends ArrayAdapter<SecureVaultModel> {
                 new Handler().postDelayed(() -> {
                     vibrateDevice();
                 }, splash_screen_time_out);
-                Toast.makeText(getContext(), "Viewing", Toast.LENGTH_SHORT).show();
 
                 // Show the image in a full-screen dialog when double-clicked
                 showImageFullScreenDialog(url);
