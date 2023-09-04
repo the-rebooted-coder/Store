@@ -78,4 +78,6 @@
     <string name="preferences">Preferences</string>
     <string name="logged_in_store_as">Logged in Store as:</string>
     <string name="logout">Logout</string>
+    <string name="dev_mail">connectwithspandan@gmail.com</string>
+    <string name="dev_name">Spandan Saxena</string>
 </resources>

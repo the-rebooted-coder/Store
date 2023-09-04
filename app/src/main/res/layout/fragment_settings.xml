@@ -60,7 +60,7 @@
                     android:paddingTop="10dp"
                     android:paddingEnd="16dp"
                     android:paddingBottom="8dp"
-                    android:text="Spandan Saxena"
+                    android:text="@string/dev_name"
                     android:textSize="15sp" />
 
                 <com.google.android.material.card.MaterialCardView
@@ -88,7 +88,7 @@
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:paddingBottom="8dp"
-                    android:text="connectwithspandan@gmail.com"
+                    android:text="@string/dev_mail"
                     android:textSize="15sp" />
             </RelativeLayout>
 
@@ -113,7 +113,7 @@
                 android:paddingEnd="16dp"
                 android:paddingBottom="8dp"
                 android:text="Security"
-                android:textSize="16sp" />
+                android:textSize="18sp" />
 
             <!-- Divider for Section 2 -->
             <com.google.android.material.divider.MaterialDivider
@@ -125,6 +125,16 @@
 
             <!-- Settings items for Section 2 -->
             <!-- Section 3 Header -->
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/secureApp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp"
+                app:thumbIcon="@drawable/done_24"
+                android:fontFamily="@font/productsans"
+                android:textSize="15sp"
+                android:text="Lock Store"/>
+
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
