@@ -3,19 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    android:padding="16dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/emptyWorld"
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:layout_gravity="center"
-            android:elevation="20dp"
             android:visibility="gone"
             app:lottie_autoPlay="true"
             app:lottie_fileName="empty.json"
@@ -39,41 +36,41 @@
             android:id="@+id/myGridView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:numColumns="2"
-            android:verticalSpacing="15dp"/>
+            android:numColumns="2" />
     </LinearLayout>
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabUpload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="240dp"
-        android:visibility="invisible"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:tooltipText="Vault new item"
+        android:text="@string/new_item"
+        android:visibility="visible"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-        app:srcCompat="@drawable/baseline_cloud_upload_24" />
+        app:icon="@drawable/baseline_cloud_upload_24"/>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="170dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:tooltipText="Check for updates"
+        android:layout_marginBottom="210dp"
         android:visibility="invisible"
-        app:maxImageSize="30dp"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:srcCompat="@drawable/upgrade_24"  />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabReload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="100dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:tooltipText="Theme"
+        android:layout_marginBottom="145dp"
         android:visibility="invisible"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:srcCompat="@drawable/theme"  />
@@ -82,8 +79,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:tooltipText="More"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="80dp"
         android:src="@drawable/more"/>
 </RelativeLayout>

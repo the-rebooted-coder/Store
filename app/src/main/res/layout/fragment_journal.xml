@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp">
-
-    <!-- RecyclerView to display journal entries -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/journalRecyclerView"
         android:layout_width="match_parent"
@@ -31,17 +29,6 @@
         android:src="@drawable/arrow"
         android:visibility="gone"
         />
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"
-        android:tooltipText="Create new Entry"
-        android:drawableTintMode="multiply"
-        app:icon="@drawable/ic_add"
-        android:text="@string/new_journal" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/selectDateButton"
         android:layout_width="wrap_content"
@@ -52,4 +39,14 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:src="@drawable/calendar"/>
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:tooltipText="Create new entry"
+        app:icon="@drawable/ic_add"
+        android:text="@string/new_journal" />
 </RelativeLayout>

@@ -45,6 +45,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -83,7 +84,8 @@ public class HomeFragment extends Fragment {
     DatabaseReference foodDbAdd;
     FirebaseAuth auth;
     FirebaseUser currentUser;
-    private FloatingActionButton showMore, fabUpload, fabReload, fabUpdate;
+    private FloatingActionButton showMore, fabReload, fabUpdate;
+    private ExtendedFloatingActionButton fabUpload;
     private boolean isFABMenuOpen = false;
     // Add a member variable for storing the list of image URLs
     private List<String> imageUrls;
@@ -153,7 +155,6 @@ public class HomeFragment extends Fragment {
                         public void onAnimationEnd(Animation animation) {
                             fabUpdate.setVisibility(View.GONE);
                             fabReload.setVisibility(View.GONE);
-                            fabUpload.setVisibility(View.GONE);
                         }
                     });
                     performReadTextFile();
@@ -340,11 +341,6 @@ public class HomeFragment extends Fragment {
     private void openFABMenu() {
         isFABMenuOpen = true;
 
-        // Animate the "Upload" FAB
-        fabUpload.setVisibility(View.VISIBLE);
-        fabUpload.animate().translationY(0);
-        fabUpload.animate().alpha(1.0f);
-
         // Animate the "Reload" FAB
         fabReload.setVisibility(View.VISIBLE);
         fabReload.animate().translationY(0);
@@ -358,11 +354,6 @@ public class HomeFragment extends Fragment {
 
     private void closeFABMenu() {
         isFABMenuOpen = false;
-
-        // Animate the "Upload" FAB
-        fabUpload.animate().translationY(0);
-        fabUpload.animate().alpha(0.0f);
-        fabUpload.setVisibility(View.GONE);
 
         // Animate the "Reload" FAB
         fabReload.animate().translationY(0);
