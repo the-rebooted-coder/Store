@@ -64,7 +64,7 @@ public class Settings extends Fragment {
         FirebaseUser user = mAuth.getCurrentUser();
         boolean isSecureAppEnabled = sharedPreferences.getBoolean("secureAppEnabled", false);
         secureAppSwitch.setChecked(isSecureAppEnabled);
-        editPin.setVisibility(isSecureAppEnabled ? View.VISIBLE : View.GONE);
+        editPin.setVisibility(isSecureAppEnabled ? View.VISIBLE : View.GONE); // Set initial visibility
         secureAppSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 // Check if a PIN is already set
@@ -73,12 +73,18 @@ public class Settings extends Fragment {
                     showSetPinDialog();
                     vibrate();
                 }
-                editPin.setVisibility(View.VISIBLE); // Show the "Edit Pin" button
-            } else {
+                else {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("secureAppEnabled", true); // Set secureAppEnabled to true
+                    editor.commit();
+                }
+                editPin.setVisibility(View.VISIBLE);
+            }
+            else {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("secureAppEnabled", false); // Set secureAppEnabled to true
-                editor.apply();
-                editPin.setVisibility(View.GONE); // Hide the "Edit Pin" button
+                editor.commit();
+                editPin.setVisibility(View.GONE);
             }
         });
         editPin.setOnClickListener(view -> {
