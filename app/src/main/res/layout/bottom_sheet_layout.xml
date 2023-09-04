@@ -11,7 +11,7 @@
     <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/store_is_locked"
+        android:text="@string/unlock_store"
         android:textSize="20sp"
         app:fontFamily="@font/psb" />
 

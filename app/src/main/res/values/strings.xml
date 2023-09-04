@@ -73,4 +73,5 @@
     <string name="unlock">Unlock</string>
     <string name="or">OR</string>
     <string name="use_biometrics">Use Biometrics</string>
+    <string name="unlock_store">Unlock Store</string>
 </resources>
