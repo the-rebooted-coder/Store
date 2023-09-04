@@ -2,13 +2,16 @@ package com.onesilicondiode.store;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -33,6 +37,8 @@ public class Settings extends Fragment {
     private ImageView userAccImage;
     private FirebaseAuth mAuth;
     private Vibrator vibrator;
+    private MaterialSwitch secureAppSwitch;
+    private SharedPreferences sharedPreferences;
 
 
     @Nullable
@@ -44,12 +50,22 @@ public class Settings extends Fragment {
         accountHolderEmail = rootView.findViewById(R.id.accountHolderEmail);
         signOutBtn = rootView.findViewById(R.id.signOutBtn);
         userAccImage = rootView.findViewById(R.id.userAccImage);
+        secureAppSwitch = rootView.findViewById(R.id.secureApp);
+        sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         if (getActivity() != null) {
             vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
         }
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-
+        boolean isSecureAppEnabled = sharedPreferences.getBoolean("secureAppEnabled", false);
+        secureAppSwitch.setChecked(isSecureAppEnabled);
+        secureAppSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Save the switch state in SharedPreferences
+                sharedPreferences.edit().putBoolean("secureAppEnabled", isChecked).apply();
+            }
+        });
         if (user != null) {
             String displayName = user.getDisplayName();
             String email = user.getEmail();
