@@ -466,6 +466,24 @@ public class HomeFragment extends Fragment {
                         }
                     })
                     .start();
+            fabUpload.setVisibility(View.VISIBLE);
+            fabUpload.setScaleX(0f);
+            fabUpload.setScaleY(0f);
+            fabUpload.setAlpha(0f);
+            fabUpload.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .alpha(1f)
+                    .setDuration(300)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            // Animation completed
+                        }
+                    })
+                    .start();
         }
     }
 
@@ -484,6 +502,21 @@ public class HomeFragment extends Fragment {
                             super.onAnimationEnd(animation);
                             // Animation completed
                             showMore.setVisibility(View.GONE);
+                        }
+                    })
+                    .start();
+            fabUpload.animate()
+                    .scaleX(0f)
+                    .scaleY(0f)
+                    .alpha(0f)
+                    .setDuration(300)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            // Animation completed
+                            fabUpload.setVisibility(View.GONE);
                         }
                     })
                     .start();

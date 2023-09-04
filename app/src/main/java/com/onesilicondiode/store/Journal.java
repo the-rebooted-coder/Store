@@ -138,11 +138,13 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
 
         return view;
     }
+
     @Override
     public void onResume() {
         super.onResume();
         animateFabIn();
     }
+
     @Override
     public void onPause() {
         super.onPause();
@@ -150,6 +152,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
             animateFabOut();
         }
     }
+
     private void animateFabIn() {
         if (!isFabMenuOpen) {
             isFabMenuOpen = true;
@@ -227,6 +230,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
                     .start();
         }
     }
+
     // Inside your Journal Fragment class
     private void showDatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
