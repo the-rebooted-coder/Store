@@ -80,4 +80,5 @@
     <string name="logout">Logout</string>
     <string name="dev_mail">connectwithspandan@gmail.com</string>
     <string name="dev_name">Spandan Saxena</string>
+    <string name="lock_store">Lock Store</string>
 </resources>

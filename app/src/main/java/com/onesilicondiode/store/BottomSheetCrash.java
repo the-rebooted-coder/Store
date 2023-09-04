@@ -2,10 +2,10 @@ package com.onesilicondiode.store;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
@@ -29,11 +29,13 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class BottomSheetCrash extends BottomSheetDialogFragment {
+    String savedPin;
     private Executor executor;
     private BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
     private Vibrator vibrator;
     private MaterialButton useBiometric;
+    private SharedPreferences sharedPreferences;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +47,11 @@ public class BottomSheetCrash extends BottomSheetDialogFragment {
                 .setSubtitle("Use your fingerprint")
                 .setNegativeButtonText("Go Back")
                 .build();
+
+        // Initialize sharedPreferences
+        sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,6 +59,7 @@ public class BottomSheetCrash extends BottomSheetDialogFragment {
         View view = inflater.inflate(R.layout.bottom_sheet_layout, container, false);
         TextInputLayout inputLayoutPassword = view.findViewById(R.id.inputLayoutPassword);
         TextInputEditText inputPassword = view.findViewById(R.id.inputPassword);
+        savedPin = sharedPreferences.getString("appPin", "");
         useBiometric = view.findViewById(R.id.useBiometric);
         if (getActivity() != null) {
             vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
@@ -67,9 +74,7 @@ public class BottomSheetCrash extends BottomSheetDialogFragment {
             // Get the entered PIN
             String enteredPin = inputPassword.getText().toString();
 
-            // Check if the entered PIN is correct (e.g., "2908")
-            if (enteredPin.equals("2908")) {
-                // PIN is correct, navigate to Landing Activity
+            if (savedPin.equals(enteredPin)) {
                 Intent intent = new Intent(getActivity(), Landing.class);
                 startActivity(intent);
                 vibrate();
@@ -88,6 +93,12 @@ public class BottomSheetCrash extends BottomSheetDialogFragment {
         return view;
     }
 
+    private void vibrate() {
+        long[] pattern = {23, 0, 17, 4, 15, 11, 19, 15, 18, 13, 16, 8, 20, 2, 0, 0, 14, 0, 14, 5, 0, 17, 16};
+        VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
+        vibrator.vibrate(vibrationEffect);
+    }
+
     private class BiometricCallback extends BiometricPrompt.AuthenticationCallback {
         @Override
         public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
@@ -101,10 +112,5 @@ public class BottomSheetCrash extends BottomSheetDialogFragment {
             }
             dismiss();
         }
-    }
-    private void vibrate() {
-        long[] pattern = {23,0,17,4,15,11,19,15,18,13,16,8,20,2,0,0,14,0,14,5,0,17,16};
-        VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
-        vibrator.vibrate(vibrationEffect);
     }
 }

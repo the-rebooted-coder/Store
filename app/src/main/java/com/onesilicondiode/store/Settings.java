@@ -11,6 +11,7 @@ import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -25,7 +27,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -62,8 +66,14 @@ public class Settings extends Fragment {
         secureAppSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // Save the switch state in SharedPreferences
-                sharedPreferences.edit().putBoolean("secureAppEnabled", isChecked).apply();
+                if (isChecked) {
+                    // Check if a PIN is already set
+                    String savedPin = sharedPreferences.getString("appPin", "");
+                    if (savedPin.isEmpty()) {
+                        showSetPinDialog();
+                        secureAppSwitch.setChecked(false);
+                    }
+                }
             }
         });
         if (user != null) {
@@ -100,7 +110,44 @@ public class Settings extends Fragment {
         VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
         vibrator.vibrate(vibrationEffect);
     }
+    private void showSetPinDialog() {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_set_pin, null);
 
+        TextInputEditText pinEditText = dialogView.findViewById(R.id.pinEditText);
+        Button setPinButton = dialogView.findViewById(R.id.setPinButton);
+
+        builder.setView(dialogView);
+        AlertDialog setPinDialog = builder.create();
+        setPinDialog.setCancelable(false);
+        setPinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String enteredPin = pinEditText.getText().toString();
+                if (isValidPin(enteredPin)) {
+                    // Save the PIN to SharedPreferences
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("appPin", enteredPin);
+                    editor.putBoolean("secureAppEnabled", true); // Set secureAppEnabled to true
+                    editor.apply();
+                    setPinDialog.dismiss();
+                    secureAppSwitch.setChecked(true);
+                } else {
+                    // Show an error message if the PIN is invalid
+                    Toast.makeText(requireContext(), "Invalid PIN. Please enter a 4-digit PIN.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+        setPinDialog.show();
+    }
+
+
+    private boolean isValidPin(String pin) {
+        // Validate the PIN (4 digits)
+        return pin.length() == 4 && pin.matches("\\d{4}");
+    }
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

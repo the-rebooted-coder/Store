@@ -28,7 +28,6 @@ public class Crash extends AppCompatActivity {
 
     private void check() {
         boolean isSecureAppEnabled = sharedPreferences.getBoolean("secureAppEnabled", false);
-
         if (!isSecureAppEnabled) {
             // Secure app is disabled, start the Land activity
             startActivity(new Intent(this, Landing.class));

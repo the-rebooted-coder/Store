@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:animateLayoutChanges="true"
     tools:context=".Settings">
 
     <ScrollView
@@ -133,7 +134,7 @@
                 app:thumbIcon="@drawable/done_24"
                 android:fontFamily="@font/productsans"
                 android:textSize="15sp"
-                android:text="Lock Store"/>
+                android:text="@string/lock_store"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
