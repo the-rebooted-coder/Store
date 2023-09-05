@@ -31,7 +31,7 @@
     <string name="button_Guides">Guide</string>
     <string name="button_Credits">Credits</string>
     <string name="button_Quit">Back to Bhojan</string>
-    <string name="developed_by">Developed by:</string>
+    <string name="developed_by">Developed by\nSpandan Saxena</string>
     <string name="developer_name">Ali Elganzory</string>
     <string name="linkedin">LinkedIn</string>
     <string name="linkedin_link">linkedin.com/in/AliElganzory</string>
@@ -83,4 +83,7 @@
     <string name="lock_store">Lock Memories</string>
     <string name="journal_entry_notifications">Journal entry notifications</string>
     <string name="one_time_reminder">Get a one-time reminder at the end of the day to write a journal entry</string>
+    <string name="memories_version">Memories Version</string>
+    <string name="info">Info</string>
+    <string name="blackcurrant">Blackcurrant 🍇</string>
 </resources>

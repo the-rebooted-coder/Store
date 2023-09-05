@@ -3,6 +3,7 @@ package com.onesilicondiode.store;
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.VIBRATOR_SERVICE;
 
+import android.Manifest;
 import android.animation.AnimatorInflater;
 import android.animation.ObjectAnimator;
 import android.app.AlarmManager;
@@ -13,7 +14,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.Manifest;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
@@ -46,7 +46,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Calendar;
-import java.util.Random;
 
 public class Settings extends Fragment {
     public static final String UI_MODE = "uiMode";
@@ -60,7 +59,7 @@ public class Settings extends Fragment {
             });
     private TextView accountHolderName;
     private TextView accountHolderEmail;
-    private MaterialButton signOutBtn, editPin;
+    private MaterialButton signOutBtn, editPin, aboutMemories;
     private ImageView userAccImage;
     private FirebaseAuth mAuth;
     private Vibrator vibrator;
@@ -76,6 +75,7 @@ public class Settings extends Fragment {
         if (getActivity() != null) {
             vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
         }
+        aboutMemories = rootView.findViewById(R.id.aboutMemories);
         accountHolderName = rootView.findViewById(R.id.accountHolderName);
         accountHolderEmail = rootView.findViewById(R.id.accountHolderEmail);
         editPin = rootView.findViewById(R.id.editPin);
@@ -87,6 +87,14 @@ public class Settings extends Fragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             checkNotificationPermission();
         }
+        aboutMemories.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                vibrate();
+                Intent aboutAppIntent = new Intent(requireContext(), AboutMemories.class);
+                startActivity(aboutAppIntent);
+            }
+        });
         boolean isNotificationEnabled = sharedPreferencesNotif.getBoolean("notificationEnabled", true);
         notification.setChecked(isNotificationEnabled);
         notification.setOnCheckedChangeListener((buttonView, isChecked) -> {
