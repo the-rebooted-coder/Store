@@ -198,6 +198,23 @@
                 android:background="?android:attr/dividerVertical" />
 
             <!-- Settings items for Section 4 -->
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/notifications"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp"
+                app:thumbIcon="@drawable/done_24"
+                android:fontFamily="@font/productsans"
+                android:textSize="15sp"
+                android:text="@string/journal_entry_notifications"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/one_time_reminder"
+                android:fontFamily="@font/productsans"
+                android:textSize="13sp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"/>
             <!-- Section 5 Header -->
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"

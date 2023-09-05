@@ -81,4 +81,6 @@
     <string name="dev_mail">connectwithspandan@gmail.com</string>
     <string name="dev_name">Spandan Saxena</string>
     <string name="lock_store">Lock Store</string>
+    <string name="journal_entry_notifications">Journal entry notifications</string>
+    <string name="one_time_reminder">Get a one-time reminder at the end of the day to write a journal entry</string>
 </resources>
