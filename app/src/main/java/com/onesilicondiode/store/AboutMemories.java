@@ -38,12 +38,12 @@ public class AboutMemories extends AppCompatActivity {
         });
         privacyPolicy.setOnClickListener(view -> {
             vibrateOtherButton();
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://the-rebooted-coder.github.io/BatteryWise/PrivacyPolicy.txt"));
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://the-rebooted-coder.github.io/Store/PrivacyPolicy.txt"));
             startActivity(browserIntent);
         });
         openSource.setOnClickListener(view -> {
             vibrateOtherButton();
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/the-rebooted-coder/BatteryWise/blob/main/LICENSE"));
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://the-rebooted-coder.github.io/Store/license.txt"));
             startActivity(browserIntent);
         });
         moreAbout.setOnActiveListener(() -> {

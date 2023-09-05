@@ -15,4 +15,5 @@
     <color name="transperent">#00FFFFFF</color>
     <color name="blues">#91D1F1</color>
     <color name="swipe">#766BD8</color>
+    <color name="trail_color">#4D43A8</color>
 </resources>

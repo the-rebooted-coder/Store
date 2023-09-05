@@ -92,7 +92,7 @@
                     ripple:inner_text_padding="8dp"
                     ripple:inner_text_size="14sp"
                     ripple:outer_background_tint="@color/swipe"
-                    ripple:trail_background_tint="@color/swipe"
+                    ripple:trail_background_tint="@color/trail_color"
                     ripple:trail_enabled="true" />
                 <TextView
                     android:id="@+id/versionName"
