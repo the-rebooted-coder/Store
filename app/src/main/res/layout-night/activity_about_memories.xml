@@ -82,7 +82,7 @@
                     android:layout_marginTop="30dp"
                     ripple:button_background_padding="3dp"
                     ripple:button_background_src="@drawable/baseline_start_24"
-                    ripple:button_background_tint="@color/swipe"
+                    ripple:button_background_tint="@color/trail_color"
                     ripple:button_height="35dp"
                     ripple:button_width="35dp"
                     ripple:has_active_status="false"

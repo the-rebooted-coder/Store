@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    tools:context=".SecondStartup">
+
+    <ImageView
+        android:id="@+id/sharedImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/app_logo"
+        android:transitionName="imageTransition" />
+
+    <TextView
+        android:id="@+id/productTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sharedImageView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/productsansbold"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:text="Lock memories,\nWrite secrets,\nSync life."
+        android:textAlignment="center"
+        android:textSize="21sp" />
+
+    <TextView
+        android:id="@+id/wavingHandTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/productTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:text="👋"
+        android:textSize="24sp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/wavingHandTextView"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="60dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/moreProductInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/productsans"
+                android:paddingStart="50dp"
+                android:paddingEnd="50dp"
+                android:text="Securely store your memories, because even your selfies deserve a secret lair.\nPlus, write your daily diary – because every villain needs a backstory!"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:visibility="visible" />
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/finalLaunch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+        android:fontFamily="@font/psb"
+        android:text="START" />
+</RelativeLayout>

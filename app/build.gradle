@@ -107,4 +107,7 @@ dependencies {
 
     //Swipe
     implementation 'com.github.mhdmoh:swipe-button:1.0.3'
+
+    //Ripple Pulse
+    implementation 'com.gauravbhola.ripplepulsebackground:library:1.0.0'
 }
