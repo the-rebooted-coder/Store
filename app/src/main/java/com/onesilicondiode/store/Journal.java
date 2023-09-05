@@ -44,8 +44,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class Journal extends Fragment implements JournalAdapter.OnItemClickListener {
     private ExtendedFloatingActionButton fab;
@@ -57,7 +59,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
     private JournalAdapter journalAdapter;
     private boolean isFabMenuOpen = false;
     private List<JournalEntry> journalEntries = new ArrayList<>();
-    private int streak = 0;
+    private Date prevDate;
 
     @Nullable
     @Override
@@ -92,6 +94,25 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
             vibrateToEnter();
             checkIfEntryExistsForToday();
         });
+
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            DatabaseReference userJournalRef = journalDatabase.child(userId);
+
+            userJournalRef.orderByChild("date").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    int streak = calculateStreak(dataSnapshot);
+                    String streakMessage = "Your streak: " + streak + " days";
+                    Toast.makeText(getContext(), streakMessage, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle any errors here
+                }
+            });
+        }
 
         // Retrieve and display journal entries for the current user
         if (currentUser != null) {
@@ -138,11 +159,66 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
         return view;
     }
 
+    // Calculate the streak
+    // Calculate the streak
+    private int calculateStreak(DataSnapshot dataSnapshot) {
+        List<Long> entryTimestamps = new ArrayList<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+
+        // Populate the list with timestamps of entry dates
+        for (DataSnapshot entrySnapshot : dataSnapshot.getChildren()) {
+            JournalEntry entry = entrySnapshot.getValue(JournalEntry.class);
+            if (entry != null) {
+                String entryDate = entry.getDate();
+
+                // Parse the entryDate into a Date object
+                try {
+                    Date parsedDate = dateFormat.parse(entryDate);
+                    if (parsedDate != null) {
+                        // Convert the date to a timestamp in milliseconds
+                        long timestamp = parsedDate.getTime();
+                        entryTimestamps.add(timestamp);
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        // Calculate the streak
+        int streak = 0;
+        int currentStreak = 0;
+
+        for (int i = 0; i < entryTimestamps.size(); i++) {
+            if (i == 0 || isOneDayApart(entryTimestamps.get(i), entryTimestamps.get(i - 1))) {
+                currentStreak++;
+            } else {
+                currentStreak = 1;  // Reset the streak
+            }
+
+            if (currentStreak > streak) {
+                streak = currentStreak;
+            }
+        }
+
+        return streak;
+    }
+
+    // Check if two timestamps are one day apart
+    private boolean isOneDayApart(long timestamp1, long timestamp2) {
+        // Define the time difference threshold for one day (in milliseconds)
+        long oneDayMillis = 24 * 60 * 60 * 1000;
+        return Math.abs(timestamp1 - timestamp2) <= oneDayMillis;
+
+    }
+
+
     @Override
     public void onResume() {
         super.onResume();
         animateFabIn();
     }
+
 
     @Override
     public void onPause() {
@@ -151,68 +227,8 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
             animateFabOut();
         }
     }
-    private void checkAndUpdateStreak() {
-        // Get the current user's journal entries
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
-            DatabaseReference userJournalRef = journalDatabase.child(userId);
 
-            userJournalRef.orderByChild("date").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        DataSnapshot latestEntrySnapshot = dataSnapshot.getChildren().iterator().next();
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
 
-                        // Get the date string from the latest entry
-                        String latestDateString = latestEntrySnapshot.child("date").getValue(String.class);
-                        String formattedCurrentDateString = dateFormat.format(new Date());
-
-                        try {
-                            // Parse the date strings into Date objects
-                            Date latestDate = dateFormat.parse(latestDateString);
-                            Date formattedCurrentDate = dateFormat.parse(formattedCurrentDateString);
-
-                            if (latestDate != null && formattedCurrentDate != null) {
-                                Calendar latestCalendar = Calendar.getInstance();
-                                latestCalendar.setTime(latestDate);
-                                Calendar currentCalendar = Calendar.getInstance();
-                                currentCalendar.setTime(formattedCurrentDate);
-
-                                // Check if the latest entry's date is one day before the current date
-                                if (isConsecutiveDates(latestCalendar, currentCalendar)) {
-                                    streak++;
-                                    Toast.makeText(getContext(), streak, Toast.LENGTH_SHORT).show();
-                                } else {
-                                    // Streak is broken, reset it
-                                    streak = 1;
-                                    Toast.makeText(getContext(), streak, Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        // No entries exist, start a new streak
-                        streak = 1;
-                        Toast.makeText(getContext(), "Shuru Karein ? "+streak, Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Handle any errors here
-                }
-            });
-        }
-    }
-
-    // Helper method to check if two dates are consecutive
-    private boolean isConsecutiveDates(Calendar date1, Calendar date2) {
-        date1.add(Calendar.DAY_OF_YEAR, 1);
-        return date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR)
-                && date1.get(Calendar.DAY_OF_YEAR) == date2.get(Calendar.DAY_OF_YEAR);
-    }
     private void animateFabIn() {
         if (!isFabMenuOpen) {
             isFabMenuOpen = true;
