@@ -57,6 +57,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
     private JournalAdapter journalAdapter;
     private boolean isFabMenuOpen = false;
     private List<JournalEntry> journalEntries = new ArrayList<>();
+    private int streak = 0;
 
     @Nullable
     @Override
@@ -150,7 +151,68 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
             animateFabOut();
         }
     }
+    private void checkAndUpdateStreak() {
+        // Get the current user's journal entries
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            DatabaseReference userJournalRef = journalDatabase.child(userId);
 
+            userJournalRef.orderByChild("date").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        DataSnapshot latestEntrySnapshot = dataSnapshot.getChildren().iterator().next();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+
+                        // Get the date string from the latest entry
+                        String latestDateString = latestEntrySnapshot.child("date").getValue(String.class);
+                        String formattedCurrentDateString = dateFormat.format(new Date());
+
+                        try {
+                            // Parse the date strings into Date objects
+                            Date latestDate = dateFormat.parse(latestDateString);
+                            Date formattedCurrentDate = dateFormat.parse(formattedCurrentDateString);
+
+                            if (latestDate != null && formattedCurrentDate != null) {
+                                Calendar latestCalendar = Calendar.getInstance();
+                                latestCalendar.setTime(latestDate);
+                                Calendar currentCalendar = Calendar.getInstance();
+                                currentCalendar.setTime(formattedCurrentDate);
+
+                                // Check if the latest entry's date is one day before the current date
+                                if (isConsecutiveDates(latestCalendar, currentCalendar)) {
+                                    streak++;
+                                    Toast.makeText(getContext(), streak, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    // Streak is broken, reset it
+                                    streak = 1;
+                                    Toast.makeText(getContext(), streak, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        // No entries exist, start a new streak
+                        streak = 1;
+                        Toast.makeText(getContext(), "Shuru Karein ? "+streak, Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle any errors here
+                }
+            });
+        }
+    }
+
+    // Helper method to check if two dates are consecutive
+    private boolean isConsecutiveDates(Calendar date1, Calendar date2) {
+        date1.add(Calendar.DAY_OF_YEAR, 1);
+        return date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR)
+                && date1.get(Calendar.DAY_OF_YEAR) == date2.get(Calendar.DAY_OF_YEAR);
+    }
     private void animateFabIn() {
         if (!isFabMenuOpen) {
             isFabMenuOpen = true;

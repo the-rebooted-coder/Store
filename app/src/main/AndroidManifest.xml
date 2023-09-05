@@ -23,6 +23,9 @@
         android:theme="@style/Theme.AppCompat.Store"
         tools:targetApi="31">
         <activity
+            android:name=".FirstTime"
+            android:exported="false" />
+        <activity
             android:name=".AboutMemories"
             android:exported="false" />
         <activity
