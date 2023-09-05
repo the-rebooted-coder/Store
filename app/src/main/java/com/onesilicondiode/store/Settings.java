@@ -5,10 +5,15 @@ import static android.content.Context.VIBRATOR_SERVICE;
 
 import android.animation.AnimatorInflater;
 import android.animation.ObjectAnimator;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.Manifest;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
@@ -20,10 +25,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -37,24 +45,37 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Calendar;
+import java.util.Random;
+
 public class Settings extends Fragment {
     public static final String UI_MODE = "uiMode";
+    private final ActivityResultLauncher<String> requestNotificationPermission =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (!isGranted) {
+                    // Permission granted, perform your action
+                    Toast.makeText(getContext(), "Permission denied, cannot post notification to keep SafeCharge working 😔", Toast.LENGTH_LONG).show();
+
+                }
+            });
     private TextView accountHolderName;
     private TextView accountHolderEmail;
     private MaterialButton signOutBtn, editPin;
     private ImageView userAccImage;
     private FirebaseAuth mAuth;
     private Vibrator vibrator;
-    private MaterialSwitch secureAppSwitch, appAppearance;
-    private SharedPreferences sharedPreferences;
-    String name;
-
+    private MaterialSwitch secureAppSwitch, appAppearance, notification;
+    private SharedPreferences sharedPreferences, sharedPreferencesTheme, sharedPreferencesNotif;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        sharedPreferencesNotif = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+        if (getActivity() != null) {
+            vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
+        }
         accountHolderName = rootView.findViewById(R.id.accountHolderName);
         accountHolderEmail = rootView.findViewById(R.id.accountHolderEmail);
         editPin = rootView.findViewById(R.id.editPin);
@@ -62,14 +83,29 @@ public class Settings extends Fragment {
         signOutBtn = rootView.findViewById(R.id.signOutBtn);
         userAccImage = rootView.findViewById(R.id.userAccImage);
         secureAppSwitch = rootView.findViewById(R.id.secureApp);
-
-        SharedPreferences sharedPreferencesTheme = requireContext().getSharedPreferences(UI_MODE, MODE_PRIVATE);
+        notification = rootView.findViewById(R.id.notifications);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            checkNotificationPermission();
+        }
+        boolean isNotificationEnabled = sharedPreferencesNotif.getBoolean("notificationEnabled", true);
+        notification.setChecked(isNotificationEnabled);
+        notification.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            vibrate();
+            SharedPreferences.Editor editor = sharedPreferencesNotif.edit();
+            editor.putBoolean("notificationEnabled", isChecked);
+            editor.apply();
+            if (isChecked) {
+                // Schedule the daily notification if it's enabled
+                scheduleDailyNotification();
+            } else {
+                // Cancel the scheduled notification if it's disabled
+                cancelDailyNotification();
+            }
+        });
+        sharedPreferencesTheme = requireContext().getSharedPreferences(UI_MODE, MODE_PRIVATE);
         String uiMode = sharedPreferencesTheme.getString("uiMode", "Light");
         appAppearance.setChecked("Dark".equals(uiMode));
         sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        if (getActivity() != null) {
-            vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
-        }
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         ObjectAnimator slideDownAnimation = (ObjectAnimator) AnimatorInflater.loadAnimator(requireContext(), R.animator.slide_down);
@@ -144,6 +180,76 @@ public class Settings extends Fragment {
 
 
         return rootView;
+    }
+
+    private void scheduleDailyNotification() {
+        // Create an intent for the notification broadcast receiver
+        Intent notificationIntent = new Intent(requireContext(), NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        // Set the time for the daily notification
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 20);
+        calendar.set(Calendar.MINUTE, 45);
+        calendar.set(Calendar.SECOND, 0);
+
+        // Schedule the notification
+        AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, // Repeat daily
+                    pendingIntent
+            );
+        }
+    }
+
+    private void checkNotificationPermission() {
+        String permission = Manifest.permission.POST_NOTIFICATIONS;
+        if (getContext() != null) {
+            if (ContextCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getContext(), "Voila, you'll be reminded 🎉!", Toast.LENGTH_SHORT).show();
+            } else if (shouldShowRequestPermissionRationale(permission)) {
+                // Permission denied previously, show rationale dialog
+                showPermissionRationaleDialog();
+            } else {
+                // Request notification permission
+                showPermissionRationaleDialog();
+            }
+        }
+    }
+
+    private void showPermissionRationaleDialog() {
+        View customView = getLayoutInflater().inflate(R.layout.custom_alert_dialog, null);
+        if (getContext() != null) {
+            new MaterialAlertDialogBuilder(getContext())
+                    .setTitle("Store is better with Notifications!")
+                    .setMessage(R.string.one_time_reminder)
+                    .setView(customView)
+                    .setPositiveButton("Continue", (dialog, which) -> {
+                        vibrate();
+                        requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS);
+                    })
+                    .setNegativeButton("No Thanks", (dialog, which) -> {
+                        // Handle if the user cancels the request
+                        Toast.makeText(getContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                    })
+                    .show();
+        }
+
+    }
+
+    private void cancelDailyNotification() {
+        // Create an intent for the notification broadcast receiver
+        Intent notificationIntent = new Intent(requireContext(), NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        // Cancel the scheduled notification
+        AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+        }
     }
 
     private void vibrate() {

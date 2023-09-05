@@ -108,6 +108,7 @@ public class ListAdapter extends ArrayAdapter<SecureVaultModel> {
                 if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     // Permission is not granted, request it from the user
                     ActivityCompat.requestPermissions(mContext, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE);
+                    Toast.makeText(mContext, "Tap Re-Save Again", Toast.LENGTH_LONG).show();
                 } else {
                     // Permission is granted, proceed with download
                     initiateDownload(imageUrl);
@@ -123,20 +124,18 @@ public class ListAdapter extends ArrayAdapter<SecureVaultModel> {
     // Request code for write external storage permission
     private static final int PERMISSION_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
-    // Method to initiate the download after permission is granted
     private void initiateDownload(String imageUrl) {
         DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         Uri uri = Uri.parse(imageUrl);
-
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setTitle("Image Download");
+        request.setTitle("Saving Memories");
         request.setDescription("Downloading image...");
 
         // Set the destination directory for the downloaded image
-        File destinationDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Vault");
+        File destinationDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Memories");
         destinationDirectory.mkdirs();
-        request.setDestinationUri(Uri.fromFile(new File(destinationDirectory, "vault-storage.jpg")));
+        request.setDestinationUri(Uri.fromFile(new File(destinationDirectory, "memories-offloaded.jpg")));
 
         downloadManager.enqueue(request);
 

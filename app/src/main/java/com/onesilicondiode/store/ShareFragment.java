@@ -92,7 +92,7 @@ public class ShareFragment extends Fragment {
                         try {
                             Bitmap selectedImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
                             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                            selectedImage.compress(Bitmap.CompressFormat.WEBP, 75, byteArrayOutputStream);
+                            selectedImage.compress(Bitmap.CompressFormat.WEBP, 90, byteArrayOutputStream);
                             byte[] webpData = byteArrayOutputStream.toByteArray();
                             filePath = saveWebPImage(webpData);
 
@@ -109,7 +109,7 @@ public class ShareFragment extends Fragment {
                         uploadTask.addOnProgressListener(snapshot -> {
                             double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
                             // Update the progressText in your custom ProgressDialog
-                            progressText.setText("Uploading: " + (int) progress + "%");
+                            progressText.setText("Encrypting: " + (int) progress + "%");
                             // Update the ProgressBar
                             progressBar.setProgress((int) progress);
                         });
