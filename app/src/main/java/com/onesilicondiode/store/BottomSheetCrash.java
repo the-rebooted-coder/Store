@@ -95,8 +95,13 @@ public class BottomSheetCrash extends BottomSheetDialogFragment {
 
     private void vibrate() {
         long[] pattern = {23, 0, 17, 4, 15, 11, 19, 15, 18, 13, 16, 8, 20, 2, 0, 0, 14, 0, 14, 5, 0, 17, 16};
-        VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
-        vibrator.vibrate(vibrationEffect);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
+            vibrator.vibrate(vibrationEffect);
+        } else {
+            // For versions lower than Oreo
+            vibrator.vibrate(pattern, -1);
+        }
     }
 
     private class BiometricCallback extends BiometricPrompt.AuthenticationCallback {

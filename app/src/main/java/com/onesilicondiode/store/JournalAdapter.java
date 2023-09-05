@@ -64,12 +64,7 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
                 }
                 return true;
             });
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showBottomSheet(entry.getTitle(), entry.getContent(), entry.getDate());
-                }
-            });
+            holder.itemView.setOnClickListener(v -> showBottomSheet(entry.getTitle(), entry.getContent(), entry.getDate()));
         }
     }
 
@@ -86,8 +81,13 @@ public class JournalAdapter extends RecyclerView.Adapter<JournalAdapter.ViewHold
 
     private void bottomSheetVibrate() {
         long[] pattern = {21, 0, 25, 5, 21, 9, 19, 12, 25, 15, 26, 18, 21, 21, 20, 24, 0};
-        VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
-        vibrator.vibrate(vibrationEffect);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
+            vibrator.vibrate(vibrationEffect);
+        } else {
+            // For versions lower than Oreo
+            vibrator.vibrate(pattern, -1);
+        }
     }
 
     public interface OnItemClickListener {

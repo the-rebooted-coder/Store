@@ -39,7 +39,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         channel.enableLights(true);
         channel.setLightColor(Color.RED);
         channel.enableVibration(true);
-        channel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+        channel.setVibrationPattern(new long[]{100, 200, 300, 400, 500});
         NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
         notificationManager.createNotificationChannel(channel);
     }

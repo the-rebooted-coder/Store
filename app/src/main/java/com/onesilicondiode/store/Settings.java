@@ -87,13 +87,10 @@ public class Settings extends Fragment {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             checkNotificationPermission();
         }
-        aboutMemories.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                vibrate();
-                Intent aboutAppIntent = new Intent(requireContext(), AboutMemories.class);
-                startActivity(aboutAppIntent);
-            }
+        aboutMemories.setOnClickListener(view -> {
+            vibrate();
+            Intent aboutAppIntent = new Intent(requireContext(), AboutMemories.class);
+            startActivity(aboutAppIntent);
         });
         boolean isNotificationEnabled = sharedPreferencesNotif.getBoolean("notificationEnabled", true);
         notification.setChecked(isNotificationEnabled);
@@ -177,13 +174,10 @@ public class Settings extends Fragment {
                         .into(userAccImage);
             }
         }
-        signOutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Sign out the user
-                vibrate();
-                signOut();
-            }
+        signOutBtn.setOnClickListener(v -> {
+            // Sign out the user
+            vibrate();
+            signOut();
         });
 
 
@@ -262,8 +256,13 @@ public class Settings extends Fragment {
 
     private void vibrate() {
         long[] pattern = {23, 0, 17, 4, 15, 11, 19, 15, 18, 13, 16, 8, 20, 2, 0, 0, 14, 0, 14, 5, 0, 17, 16};
-        VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
-        vibrator.vibrate(vibrationEffect);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            VibrationEffect vibrationEffect = VibrationEffect.createWaveform(pattern, -1);
+            vibrator.vibrate(vibrationEffect);
+        } else {
+            // For versions lower than Oreo
+            vibrator.vibrate(pattern, -1);
+        }
     }
 
     private void showSetPinDialog() {
@@ -276,22 +275,19 @@ public class Settings extends Fragment {
         builder.setView(dialogView);
         AlertDialog setPinDialog = builder.create();
         setPinDialog.setCancelable(false);
-        setPinButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String enteredPin = pinEditText.getText().toString();
-                if (isValidPin(enteredPin)) {
-                    // Save the PIN to SharedPreferences
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("appPin", enteredPin);
-                    editor.putBoolean("secureAppEnabled", true); // Set secureAppEnabled to true
-                    editor.apply();
-                    setPinDialog.dismiss();
-                    secureAppSwitch.setChecked(true);
-                } else {
-                    // Show an error message if the PIN is invalid
-                    Toast.makeText(requireContext(), "Invalid PIN. Please enter a 4-digit PIN.", Toast.LENGTH_SHORT).show();
-                }
+        setPinButton.setOnClickListener(v -> {
+            String enteredPin = pinEditText.getText().toString();
+            if (isValidPin(enteredPin)) {
+                // Save the PIN to SharedPreferences
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("appPin", enteredPin);
+                editor.putBoolean("secureAppEnabled", true); // Set secureAppEnabled to true
+                editor.apply();
+                setPinDialog.dismiss();
+                secureAppSwitch.setChecked(true);
+            } else {
+                // Show an error message if the PIN is invalid
+                Toast.makeText(requireContext(), "Invalid PIN. Please enter a 4-digit PIN.", Toast.LENGTH_SHORT).show();
             }
         });
 

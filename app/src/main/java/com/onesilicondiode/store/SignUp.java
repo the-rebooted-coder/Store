@@ -83,56 +83,50 @@ public class SignUp extends AppCompatActivity {
         builder.setTitle("Choose Theme for Store");
         builder.setMessage("You can change it later inside the app!");
 
-        builder.setPositiveButton("Dark", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                vibrateDevice();
-                signInButton.setVisibility(View.INVISIBLE);
-                fadingTextView.pause();
-                fadingTextView.setVisibility(View.INVISIBLE);
-                lottieAnimationView.setVisibility(View.VISIBLE);
-                lottieAnimationView.setAnimation("dark_mode.json");
-                lottieAnimationView.playAnimation();
-                alertDialog1.dismiss();
-                int theme_timeout = 2000;
-                new Handler().postDelayed(() -> {
-                    lottieAnimationView.cancelAnimation();
-                    lottieAnimationView.setVisibility(View.GONE);
-                    fadingTextView.resume();
-                    signInButton.setVisibility(View.VISIBLE);
-                    fadingTextView.setVisibility(View.VISIBLE);
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    SharedPreferences.Editor editor = getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
-                    editor.putString("uiMode", "Dark");
-                    editor.apply();
-                }, theme_timeout);
-            }
+        builder.setPositiveButton("Dark", (dialog, which) -> {
+            vibrateDevice();
+            signInButton.setVisibility(View.INVISIBLE);
+            fadingTextView.pause();
+            fadingTextView.setVisibility(View.INVISIBLE);
+            lottieAnimationView.setVisibility(View.VISIBLE);
+            lottieAnimationView.setAnimation("dark_mode.json");
+            lottieAnimationView.playAnimation();
+            alertDialog1.dismiss();
+            int theme_timeout = 2000;
+            new Handler().postDelayed(() -> {
+                lottieAnimationView.cancelAnimation();
+                lottieAnimationView.setVisibility(View.GONE);
+                fadingTextView.resume();
+                signInButton.setVisibility(View.VISIBLE);
+                fadingTextView.setVisibility(View.VISIBLE);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                SharedPreferences.Editor editor = getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
+                editor.putString("uiMode", "Dark");
+                editor.apply();
+            }, theme_timeout);
         });
 
-        builder.setNegativeButton("Light", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                vibrateDevice();
-                signInButton.setVisibility(View.INVISIBLE);
-                fadingTextView.setVisibility(View.INVISIBLE);
-                fadingTextView.pause();
-                lottieAnimationView.setVisibility(View.VISIBLE);
-                lottieAnimationView.setAnimation("light_mode.json");
-                lottieAnimationView.playAnimation();
-                alertDialog1.dismiss();
-                int theme_timeout = 2000;
-                new Handler().postDelayed(() -> {
-                    lottieAnimationView.cancelAnimation();
-                    lottieAnimationView.setVisibility(View.GONE);
-                    signInButton.setVisibility(View.VISIBLE);
-                    fadingTextView.resume();
-                    fadingTextView.setVisibility(View.VISIBLE);
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    SharedPreferences.Editor editor = getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
-                    editor.putString("uiMode", "Light");
-                    editor.apply();
-                }, theme_timeout);
-            }
+        builder.setNegativeButton("Light", (dialog, which) -> {
+            vibrateDevice();
+            signInButton.setVisibility(View.INVISIBLE);
+            fadingTextView.setVisibility(View.INVISIBLE);
+            fadingTextView.pause();
+            lottieAnimationView.setVisibility(View.VISIBLE);
+            lottieAnimationView.setAnimation("light_mode.json");
+            lottieAnimationView.playAnimation();
+            alertDialog1.dismiss();
+            int theme_timeout = 2000;
+            new Handler().postDelayed(() -> {
+                lottieAnimationView.cancelAnimation();
+                lottieAnimationView.setVisibility(View.GONE);
+                signInButton.setVisibility(View.VISIBLE);
+                fadingTextView.resume();
+                fadingTextView.setVisibility(View.VISIBLE);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                SharedPreferences.Editor editor = getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
+                editor.putString("uiMode", "Light");
+                editor.apply();
+            }, theme_timeout);
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
