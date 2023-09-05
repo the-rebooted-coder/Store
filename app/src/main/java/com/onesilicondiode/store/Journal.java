@@ -335,7 +335,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
     private void showDeleteEntryDialog(JournalEntry entryToDelete) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         builder.setTitle("Delete Journal Entry");
-        builder.setMessage("Are you sure you want to delete this journal entry?");
+        builder.setMessage("Do you want to delete this journal entry?");
         builder.setPositiveButton("Delete", (dialog, which) -> {
             // Delete the entry from Firebase
             if (currentUser != null) {
@@ -347,7 +347,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
             dialog.dismiss();
         });
 
-        builder.setNegativeButton("Cancel", (dialog, which) -> {
+        builder.setNegativeButton("No Thanks", (dialog, which) -> {
             dialog.dismiss();
         });
 
