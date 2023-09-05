@@ -65,8 +65,8 @@
                     android:textSize="15sp" />
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="5dp"
@@ -169,6 +169,15 @@
                 android:background="?android:attr/dividerVertical" />
 
             <!-- Settings items for Section 3 -->
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/appAppearance"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp"
+                app:thumbIcon="@drawable/done_24"
+                android:fontFamily="@font/productsans"
+                android:textSize="15sp"
+                android:text="Dark Mode"/>
             <!-- Section 4 Header -->
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"

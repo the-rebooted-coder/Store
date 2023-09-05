@@ -1,5 +1,6 @@
 package com.onesilicondiode.store;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.VIBRATOR_SERVICE;
 
 import android.animation.AnimatorInflater;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -36,15 +38,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class Settings extends Fragment {
+    public static final String UI_MODE = "uiMode";
     private TextView accountHolderName;
     private TextView accountHolderEmail;
     private MaterialButton signOutBtn, editPin;
-
     private ImageView userAccImage;
     private FirebaseAuth mAuth;
     private Vibrator vibrator;
-    private MaterialSwitch secureAppSwitch;
+    private MaterialSwitch secureAppSwitch, appAppearance;
     private SharedPreferences sharedPreferences;
+    String name;
 
 
     @Nullable
@@ -55,9 +58,14 @@ public class Settings extends Fragment {
         accountHolderName = rootView.findViewById(R.id.accountHolderName);
         accountHolderEmail = rootView.findViewById(R.id.accountHolderEmail);
         editPin = rootView.findViewById(R.id.editPin);
+        appAppearance = rootView.findViewById(R.id.appAppearance);
         signOutBtn = rootView.findViewById(R.id.signOutBtn);
         userAccImage = rootView.findViewById(R.id.userAccImage);
         secureAppSwitch = rootView.findViewById(R.id.secureApp);
+
+        SharedPreferences sharedPreferencesTheme = requireContext().getSharedPreferences(UI_MODE, MODE_PRIVATE);
+        String uiMode = sharedPreferencesTheme.getString("uiMode", "Light");
+        appAppearance.setChecked("Dark".equals(uiMode));
         sharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         if (getActivity() != null) {
             vibrator = (Vibrator) getActivity().getSystemService(VIBRATOR_SERVICE);
@@ -67,7 +75,22 @@ public class Settings extends Fragment {
         ObjectAnimator slideDownAnimation = (ObjectAnimator) AnimatorInflater.loadAnimator(requireContext(), R.animator.slide_down);
         boolean isSecureAppEnabled = sharedPreferences.getBoolean("secureAppEnabled", false);
         secureAppSwitch.setChecked(isSecureAppEnabled);
-        editPin.setVisibility(isSecureAppEnabled ? View.VISIBLE : View.GONE); // Set initial visibility
+        editPin.setVisibility(isSecureAppEnabled ? View.VISIBLE : View.GONE);
+        appAppearance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                SharedPreferences.Editor editor = requireContext().getSharedPreferences(UI_MODE, MODE_PRIVATE).edit();
+                if (isChecked) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    editor.putString("uiMode", "Dark");
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    editor.putString("uiMode", "Light");
+                }
+                editor.apply();
+            }
+        });
+
         secureAppSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 // Check if a PIN is already set
