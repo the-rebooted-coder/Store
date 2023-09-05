@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/sharedImageView"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
@@ -57,8 +57,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/productsans"
-                android:paddingStart="50dp"
-                android:paddingEnd="50dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
                 android:text="Securely store your memories, because even your selfies deserve a secret lair.\nPlus, write your daily diary – because every villain needs a backstory!"
                 android:textAlignment="center"
                 android:textSize="16sp"

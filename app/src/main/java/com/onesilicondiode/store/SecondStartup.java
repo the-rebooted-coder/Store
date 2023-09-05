@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.transition.Explode;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
@@ -24,7 +26,9 @@ public class SecondStartup extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
         setContentView(R.layout.activity_second_startup);
+        getWindow().setExitTransition(new Explode());
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         finalLaunch = findViewById(R.id.finalLaunch);
         finalLaunch.setOnClickListener(view -> {

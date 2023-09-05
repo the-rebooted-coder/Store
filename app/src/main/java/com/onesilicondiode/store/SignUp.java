@@ -80,7 +80,7 @@ public class SignUp extends AppCompatActivity {
 
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
 
-        builder.setTitle("Choose Theme for Store");
+        builder.setTitle("Choose Theme for Memories");
         builder.setMessage("You can change it later inside the app!");
 
         builder.setPositiveButton("Dark", (dialog, which) -> {

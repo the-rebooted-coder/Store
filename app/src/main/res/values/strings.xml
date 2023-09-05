@@ -59,7 +59,7 @@
     <string name="just_before_we_begin">Just Before We Begin</string>
     <string name="goAhead">Continue</string>
     <string name="we_need_to_access_your_location_before_bhojan_can_start_so_that_the_food_you_share_can_be_located_by_the_one_in_need_provide_location_permission_to_continue_using_bhojan">We need to access your location before Bhojan can start, so that the food you share can be located by the one in need.\n\nProvide Location Permission to continue using Bhojan.\nThis app collects location data to enable food-sharing and might collect information when the app is closed to expedite the process.”</string>
-    <string name="disclaimer">Continue to access \'Memories\' your one stop place for storing personal memories to cherish them later, and your own daily-10-line journal.\n\nFree, Forever ✨.</string>
+    <string name="disclaimer">Continue to access \'Memories\', your one stop place for storing personal memories to cherish them later, and your own daily-10-line journal.\n\nFree, Forever ✨.</string>
     <string name="disclaimer_two">Nothing stored in the Vault right now, go to the \'Browse\' Tab to Start Vaulting Photos</string>
     <string name="disclaimer_three">All the images vaulted are secured through 256-Bit Military Grade Encryption, only you can browse them.</string>
     <string name="browse">Browse</string>
