@@ -70,12 +70,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
 
         // Initialize Firebase Database reference
         journalDatabase = FirebaseDatabase.getInstance().getReference().child("JournalEntries");
-        calendarView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDatePickerDialog();
-            }
-        });
+        calendarView.setOnClickListener(v -> showDatePickerDialog());
         // Get the current user
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (getActivity() != null) {
@@ -419,12 +414,8 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
     private void showAddEntryDialog() {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
         builder.setTitle("Add a New Journal Entry");
-
         // Inflate the dialog layout
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_entry, null);
-
-        TextInputLayout titleLayout = dialogView.findViewById(R.id.titleLayout);
-        TextInputLayout contentLayout = dialogView.findViewById(R.id.contentLayout);
 
         TextInputEditText titleEditText = dialogView.findViewById(R.id.titleEditText);
         TextInputEditText contentEditText = dialogView.findViewById(R.id.contentEditText);
@@ -462,7 +453,7 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
                 // Generate a unique key for the entry
                 String entryKey = journalDatabase.push().getKey();
 
-                JournalEntry entry = new JournalEntry(title, content, formattedDate, entryKey); // Pass the key
+                JournalEntry entry = new JournalEntry(title, content, formattedDate, entryKey);
 
                 if (currentUser != null) {
                     String userId = currentUser.getUid();
@@ -472,9 +463,9 @@ public class Journal extends Fragment implements JournalAdapter.OnItemClickListe
                     }
                 }
             } else if (title.isEmpty()) {
-                titleLayout.setError("Title is Required");
+                Toast.makeText(getContext(), "Put some title for the day", Toast.LENGTH_SHORT).show();
             } else if (content.isEmpty()) {
-                contentLayout.setError("Content is Required");
+                Toast.makeText(getContext(), "Your day couldn't be this boring 💤", Toast.LENGTH_LONG).show();
             }
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> {
