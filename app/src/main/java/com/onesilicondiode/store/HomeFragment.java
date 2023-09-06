@@ -69,15 +69,9 @@ public class HomeFragment extends Fragment {
         myListView = v3.findViewById(R.id.myGridView);
         foodList = new ArrayList<>();
         imageUrls = new ArrayList<>(); // Initialize the imageUrls list
-        fabUpload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                requireActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragmentContainer, new ShareFragment()) // Replace with the ShareFragment
-                        .addToBackStack(null) // Add to back stack to handle navigation
-                        .commit();
-            }
+        fabUpload.setOnClickListener(view -> {
+            BottomSheetUpload bottomSheetFragment = new BottomSheetUpload();
+            bottomSheetFragment.show(getParentFragmentManager(), bottomSheetFragment.getTag());
         });
         // Check if a user is authenticated
         if (currentUser != null) {

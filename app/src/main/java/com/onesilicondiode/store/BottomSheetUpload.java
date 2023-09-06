@@ -27,11 +27,10 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -45,7 +44,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class ShareFragment extends Fragment {
+public class BottomSheetUpload extends BottomSheetDialogFragment {
     private final int PICK_IMAGE_REQUEST = 22;
     MaterialButton share;
     DatabaseReference foodDbAdd;
@@ -58,14 +57,18 @@ public class ShareFragment extends Fragment {
     private Dialog progressDialog;
     private ActivityResultLauncher<Intent> pickImageLauncher;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View v2 = inflater.inflate(R.layout.fragment_share, container, false);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.bottom_sheet_upload, container, false);
         progressDialog = createProgressDialog(getContext());
-        share = v2.findViewById(R.id.shareFood);
-        foodImage = v2.findViewById(R.id.foodImage);
+        share = view.findViewById(R.id.shareFood);
+        foodImage = view.findViewById(R.id.foodImage);
         foodDbAdd = FirebaseDatabase.getInstance().getReference().child("SecureVault");
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -181,10 +184,8 @@ public class ShareFragment extends Fragment {
             }
 
         });
-        return v2;
+        return view;
     }
-
-
     public Dialog createProgressDialog(Context context) {
         Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.progress_dialog);

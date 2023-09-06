@@ -99,20 +99,9 @@ public class Landing extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        // Check if the current fragment is the ShareFragment
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
-        if (currentFragment instanceof ShareFragment) {
-            // Replace the ShareFragment with the HomeFragment
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragmentContainer, new HomeFragment())
-                    .commit();
-        } else {
-            // If not on ShareFragment, proceed with default back button behavior
-            super.onBackPressed();
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            finish();
-        }
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        finish();
     }
 
     private void saveFirstTimePreference() {
