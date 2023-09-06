@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -48,7 +47,6 @@ public class BottomSheetUpload extends BottomSheetDialogFragment {
     private final int PICK_IMAGE_REQUEST = 22;
     MaterialButton share;
     DatabaseReference foodDbAdd;
-    ImageView foodImage;
     FirebaseStorage storage;
     StorageReference storageReference;
     private Uri filePath;
@@ -58,17 +56,10 @@ public class BottomSheetUpload extends BottomSheetDialogFragment {
     private ActivityResultLauncher<Intent> pickImageLauncher;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottom_sheet_upload, container, false);
         progressDialog = createProgressDialog(getContext());
         share = view.findViewById(R.id.shareFood);
-        foodImage = view.findViewById(R.id.foodImage);
         foodDbAdd = FirebaseDatabase.getInstance().getReference().child("SecureVault");
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -80,111 +71,106 @@ public class BottomSheetUpload extends BottomSheetDialogFragment {
                         }
                         // Get the Uri of data
                         filePath = result.getData().getData();
-                        try {
-                            // Display the selected image
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
-                            foodImage.setImageBitmap(bitmap);
-                        } catch (IOException e) {
-                            // Log the exception
-                            e.printStackTrace();
-                        }
+                        uploadImage();
                     } else {
                         if (progressDialog != null && progressDialog.isShowing()) {
                             progressDialog.dismiss();
                         }
                     }
                 });
-        foodImage.setOnClickListener(v -> selectImage());
+
         share.setOnClickListener(v -> {
             if (haveNetwork()) {
-                if (filePath != null) {
-                    vibrateDevice();
-                    SecureVaultModel food1 = new SecureVaultModel();
-
-                    // Obtain the current user's UID from Firebase Authentication
-                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                    if (currentUser != null) {
-                        String userId = currentUser.getUid();
-                        food1.setUserId(userId); // Set the user's UID
-
-                        DatabaseReference specimenReference = foodDbAdd.child("SecureVault").push();
-                        food1.setImageUrl("");
-                        specimenReference.setValue(food1);
-                        String key = specimenReference.getKey();
-                        food1.setKey(key);
-
-                        // Compress the selected image to WebP format
-                        try {
-                            Bitmap selectedImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
-                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                            selectedImage.compress(Bitmap.CompressFormat.WEBP, 90, byteArrayOutputStream);
-                            byte[] webpData = byteArrayOutputStream.toByteArray();
-                            filePath = saveWebPImage(webpData);
-
-                            // Now, you have the compressed image in filePath
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        StorageReference ref = storageReference.child("secureVault/" + filePath.getLastPathSegment());
-                        UploadTask uploadTask = ref.putFile(filePath);
-                        share.setEnabled(false);
-
-                        // Set up a progress listener for the upload task
-                        uploadTask.addOnProgressListener(snapshot -> {
-                            double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                            // Update the progressText in your custom ProgressDialog
-                            progressText.setText("Encrypting: " + (int) progress + "%");
-                            // Update the ProgressBar
-                            progressBar.setProgress((int) progress);
-                        });
-
-                        uploadTask.addOnSuccessListener(
-                                        taskSnapshot -> {
-                                            Task<Uri> downloadUrl = ref.getDownloadUrl();
-                                            downloadUrl.addOnSuccessListener(uri -> {
-                                                progressDialog.dismiss();
-                                                vibrateWithFeel();
-                                                Toast.makeText(getActivity().getApplicationContext(), "Stored in Vault Successfully!", Toast.LENGTH_SHORT).show();
-                                                final Handler handler = new Handler();
-                                                handler.postDelayed(() -> vibrateDeviceThird(), 100);
-                                                final Handler handler2 = new Handler();
-                                                handler2.postDelayed(() -> vibrateDevice(), 300);
-                                                String imageReference = uri.toString();
-                                                foodDbAdd.child("SecureVault").child(food1.getKey()).child("imageUrl").setValue(imageReference);
-                                                food1.setImageUrl(imageReference);
-                                                share.setEnabled(true);
-                                            });
-                                        })
-                                .addOnFailureListener(e -> {
-                                    share.setEnabled(true);
-                                    Toast.makeText(getActivity().getApplicationContext(),
-                                                    "Image Upload Failed " + e.getMessage(),
-                                                    Toast.LENGTH_SHORT)
-                                            .show();
-                                    if (progressDialog != null && progressDialog.isShowing()) {
-                                        progressDialog.dismiss();
-                                    }
-                                });
-
-                        progressDialog.setCancelable(false);
-                        progressDialog.show();
-                    } else {
-                        // Handle the case where the user is not authenticated
-                        Toast.makeText(getActivity().getApplicationContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    final Handler handler = new Handler();
-                    handler.postDelayed(() -> vibrateDevice(), 100);
-                    vibrateDeviceThird();
-                    Toast.makeText(getActivity().getApplicationContext(), "Tap on the image-lock above and select an image first!", Toast.LENGTH_SHORT).show();
-                }
+                selectImage();
             } else {
                 Toast.makeText(getActivity().getApplicationContext(), "No Internet 😔", Toast.LENGTH_SHORT).show();
             }
-
         });
         return view;
+    }
+    private void uploadImage() {
+        if (filePath != null) {
+            vibrateDevice();
+            SecureVaultModel food1 = new SecureVaultModel();
+
+            // Obtain the current user's UID from Firebase Authentication
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser != null) {
+                String userId = currentUser.getUid();
+                food1.setUserId(userId); // Set the user's UID
+
+                DatabaseReference specimenReference = foodDbAdd.child("SecureVault").push();
+                food1.setImageUrl("");
+                specimenReference.setValue(food1);
+                String key = specimenReference.getKey();
+                food1.setKey(key);
+
+                // Compress the selected image to WebP format
+                try {
+                    Bitmap selectedImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    selectedImage.compress(Bitmap.CompressFormat.WEBP, 90, byteArrayOutputStream);
+                    byte[] webpData = byteArrayOutputStream.toByteArray();
+                    filePath = saveWebPImage(webpData);
+
+                    // Now, you have the compressed image in filePath
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                StorageReference ref = storageReference.child("secureVault/" + filePath.getLastPathSegment());
+                UploadTask uploadTask = ref.putFile(filePath);
+                share.setEnabled(false);
+
+                // Set up a progress listener for the upload task
+                uploadTask.addOnProgressListener(snapshot -> {
+                    double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                    // Update the progressText in your custom ProgressDialog
+                    progressText.setText("Encrypting: " + (int) progress + "%");
+                    // Update the ProgressBar
+                    progressBar.setProgress((int) progress);
+                });
+
+                uploadTask.addOnSuccessListener(
+                                taskSnapshot -> {
+                                    Task<Uri> downloadUrl = ref.getDownloadUrl();
+                                    downloadUrl.addOnSuccessListener(uri -> {
+                                        progressDialog.dismiss();
+                                        vibrateWithFeel();
+                                        Toast.makeText(getActivity().getApplicationContext(), "Stored in Vault Successfully!", Toast.LENGTH_SHORT).show();
+                                        final Handler handler = new Handler();
+                                        handler.postDelayed(() -> vibrateDeviceThird(), 100);
+                                        final Handler handler2 = new Handler();
+                                        handler2.postDelayed(() -> vibrateDevice(), 300);
+                                        String imageReference = uri.toString();
+                                        foodDbAdd.child("SecureVault").child(food1.getKey()).child("imageUrl").setValue(imageReference);
+                                        food1.setImageUrl(imageReference);
+                                        share.setEnabled(true);
+                                    });
+                                })
+                        .addOnFailureListener(e -> {
+                            share.setEnabled(true);
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                            "Image Upload Failed " + e.getMessage(),
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+                        });
+
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+            } else {
+                // Handle the case where the user is not authenticated
+                Toast.makeText(getActivity().getApplicationContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            final Handler handler = new Handler();
+            handler.postDelayed(() -> vibrateDevice(), 100);
+            vibrateDeviceThird();
+            Toast.makeText(getActivity().getApplicationContext(), "Tap on the image-lock above and select an image first!", Toast.LENGTH_SHORT).show();
+        }
     }
     public Dialog createProgressDialog(Context context) {
         Dialog dialog = new Dialog(context);
@@ -223,14 +209,6 @@ public class BottomSheetUpload extends BottomSheetDialogFragment {
             }
             // Get the Uri of data
             filePath = data.getData();
-            try {
-                // Display the selected image
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
-                foodImage.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                // Log the exception
-                e.printStackTrace();
-            }
         } else {
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
