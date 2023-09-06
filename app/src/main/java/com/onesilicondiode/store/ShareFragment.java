@@ -25,6 +25,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -54,6 +56,7 @@ public class ShareFragment extends Fragment {
     private ProgressBar progressBar;
     private TextView progressText;
     private Dialog progressDialog;
+    private ActivityResultLauncher<Intent> pickImageLauncher;
 
     @Nullable
     @Override
@@ -66,7 +69,28 @@ public class ShareFragment extends Fragment {
         foodDbAdd = FirebaseDatabase.getInstance().getReference().child("SecureVault");
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
-
+        pickImageLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        if (progressDialog != null && progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+                        // Get the Uri of data
+                        filePath = result.getData().getData();
+                        try {
+                            // Display the selected image
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
+                            foodImage.setImageBitmap(bitmap);
+                        } catch (IOException e) {
+                            // Log the exception
+                            e.printStackTrace();
+                        }
+                    } else {
+                        if (progressDialog != null && progressDialog.isShowing()) {
+                            progressDialog.dismiss();
+                        }
+                    }
+                });
         foodImage.setOnClickListener(v -> selectImage());
         share.setOnClickListener(v -> {
             if (haveNetwork()) {
@@ -172,14 +196,9 @@ public class ShareFragment extends Fragment {
     }
 
     private void selectImage() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(
-                Intent.createChooser(
-                        intent,
-                        "Select Image from here..."),
-                PICK_IMAGE_REQUEST);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        // Remove the setType line to avoid clearing the data type
+        pickImageLauncher.launch(intent);
         vibrateDeviceThird();
         // Show the custom ProgressDialog
         if (progressDialog != null && !progressDialog.isShowing()) {
@@ -251,8 +270,18 @@ public class ShareFragment extends Fragment {
     }
 
     private void vibrateDeviceThird() {
-        Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-        vibrator.vibrate(VibrationEffect.createOneShot(36, VibrationEffect.DEFAULT_AMPLITUDE));
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            if (getActivity() != null) {
+                Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                vibrator.vibrate(VibrationEffect.createOneShot(36, VibrationEffect.DEFAULT_AMPLITUDE));
+
+            }
+        } else {
+            if (getActivity() != null) {
+                Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                vibrator.vibrate(36);
+            }
+        }
     }
 
     private boolean haveNetwork() {
