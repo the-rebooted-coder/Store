@@ -1,6 +1,9 @@
 package com.onesilicondiode.store;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,14 +16,22 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Calendar;
+
 public class Landing extends AppCompatActivity {
     private Vibrator vibrator;
+    private SharedPreferences sharedPreferencesNotif;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
+        sharedPreferencesNotif = this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        boolean isNotificationEnabled = sharedPreferencesNotif.getBoolean("notificationEnabled", true);
+        if(isNotificationEnabled){
+            scheduleDailyNotification();
+        }
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         boolean isFirstTime = isFirstTimeOpen();
         if (isFirstTime) {
@@ -47,7 +58,28 @@ public class Landing extends AppCompatActivity {
             return true;
         });
     }
+    private void scheduleDailyNotification() {
+        // Create an intent for the notification broadcast receiver
+        Intent notificationIntent = new Intent(this, NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        // Set the time for the daily notification
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 20);
+        calendar.set(Calendar.MINUTE, 45);
+        calendar.set(Calendar.SECOND, 0);
 
+        // Schedule the notification
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, // Repeat daily
+                    pendingIntent
+            );
+        }
+    }
     private boolean isFirstTimeOpen() {
         SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         // Check if the "firstTime" preference exists

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -30,19 +31,22 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
     private void createNotificationChannel(Context context) {
-        CharSequence name = "Journal Entry Reminders";
-        String description = "Channel for Journal Entry";
-        int importance = NotificationManager.IMPORTANCE_DEFAULT;
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-        channel.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.subtle), null);
-        channel.setDescription(description);
-        channel.enableLights(true);
-        channel.setLightColor(Color.RED);
-        channel.enableVibration(true);
-        channel.setVibrationPattern(new long[]{100, 200, 300, 400, 500});
-        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-        notificationManager.createNotificationChannel(channel);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Journal Entry Reminders";
+            String description = "Channel for Journal Entry";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.subtle), null);
+            channel.setDescription(description);
+            channel.enableLights(true);
+            channel.setLightColor(Color.RED);
+            channel.enableVibration(true);
+            channel.setVibrationPattern(new long[]{100, 200, 300, 400, 500});
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
+
 
     @SuppressLint("MissingPermission")
     private void showNotification(Context context) {

@@ -50,38 +50,4 @@
         android:visibility="visible"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:icon="@drawable/baseline_cloud_upload_24"/>
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabUpdate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:tooltipText="Check for updates"
-        android:layout_marginBottom="210dp"
-        android:visibility="invisible"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-        app:srcCompat="@drawable/upgrade_24"  />
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabReload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:tooltipText="Theme"
-        android:layout_marginBottom="145dp"
-        android:visibility="invisible"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-        app:srcCompat="@drawable/theme"  />
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:tooltipText="More"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="80dp"
-        android:src="@drawable/more"/>
 </RelativeLayout>
