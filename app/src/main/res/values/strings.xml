@@ -2,7 +2,7 @@
     <string name="app_name">Memories</string>
     <string name="app_name_extended">Memories</string>
     <string name="hey_there">Namaste 🙏</string>
-    <string name="welcome_to_bhojan">Welcome to\nBhojan!</string>
+    <string name="welcome_to_bhojan">Welcome to\nMemories!</string>
     <string name="continue_with_google">  Continue with Google</string>
     <string name="share">Share</string>
     <string name="more">More</string>
@@ -87,4 +87,6 @@
     <string name="info">Info</string>
     <string name="blackcurrant">Blackcurrant 🍇</string>
     <string name="more_disclaimer">Every image you store is encrypted with military grade end-to-end encryption before it is stored.\nReady to be downloaded back anytime you need.</string>
+    <string name="versionNumber">1.0.0 Beta</string>
+    <string name="theme">Theme</string>
 </resources>

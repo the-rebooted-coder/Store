@@ -28,6 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,8 +41,8 @@ public class SignUp extends AppCompatActivity {
     private final int RC_SIGN_IN = 1;
     LottieAnimationView food_load;
     AlertDialog alertDialog1;
-    Button themeChooser;
-    private Button signInButton;
+    Chip themeChooser;
+    private Chip signInButton;
     private GoogleSignInClient mGoogleSignInClient;
     private String TAG = "Login";
     private FirebaseAuth mAuth;

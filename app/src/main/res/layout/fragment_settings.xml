@@ -247,7 +247,7 @@
                 android:id="@+id/memoriesVersion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1.0.0 Release"
+                android:text="@string/versionNumber"
                 android:fontFamily="@font/productsans"
                 android:textSize="13sp"
                 android:layout_marginTop="4dp"

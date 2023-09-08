@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.Calendar;
 
@@ -27,7 +28,7 @@ public class Landing extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
-        sharedPreferencesNotif = this.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        sharedPreferencesNotif = this.getSharedPreferences("MyPrefsEnabled", Context.MODE_PRIVATE);
         boolean isNotificationEnabled = sharedPreferencesNotif.getBoolean("notificationEnabled", true);
         if(isNotificationEnabled){
             scheduleDailyNotification();
@@ -81,20 +82,18 @@ public class Landing extends AppCompatActivity {
         }
     }
     private boolean isFirstTimeOpen() {
-        SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences("MyPrefsEnabled", Context.MODE_PRIVATE);
         // Check if the "firstTime" preference exists
         return !preferences.contains("firstTime");
     }
 
     private void showFirstTimeAlertDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Hey, here's what the Store app is all about 👋");
-        builder.setMessage("We have public images, then we sometimes have not so public images, which we don't want the world to see, to address this, 'Store' comes in way 🚀.\n\nYou can keep storing images that you want, irrespective of their size, and then delete them away from your phone.\n\nSimple.\n\nAll of them are right there when you open this app 🥂.\n\nOh, and by the way, the next time when you open this app, it will simply crash 💥, don't worry, it's programmed to do so, just to keep other people away from accessing your mild data, just use the fingerprint sensor to unlock the app, or tap the Crash message 4 times to manually enter PIN.🎉!");
-        builder.setPositiveButton("GOTCHA", (dialog, which) -> saveFirstTimePreference());
-        builder.setCancelable(false);
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Here's What's new in Store! 👋")
+                .setMessage("The name!\n\nStoring things is now all better with a new welcoming name, say hello to 'Memories', your personal private storage and digital journal, where you can put stuff which is only meant to cherish later, all by yourself.\n\nThere's 'Journal', that let's you add 10-line entries about your day, with a title.\n\nSay goodbye to keeping those diaries, take memories with you, right in your pocket!\n\nOh, and there's a whole new preferences panel to tweak memories as per your taste!\n\nDo know, this is a beta version, so you might expect some bumps along the ride 🚗!")
+                .setPositiveButton("Got it!", (dialog, which) -> saveFirstTimePreference())
+                .setCancelable(false)
+                .show();
     }
 
     @Override
@@ -105,7 +104,8 @@ public class Landing extends AppCompatActivity {
     }
 
     private void saveFirstTimePreference() {
-        SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        vibrate();
+        SharedPreferences preferences = getSharedPreferences("MyPrefsEnabled", Context.MODE_PRIVATE);
         preferences.edit().putBoolean("firstTime", true).apply();
     }
 

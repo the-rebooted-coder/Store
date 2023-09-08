@@ -44,23 +44,22 @@
         android:layout_marginEnd="50dp"
         android:text="@string/disclaimer"/>
 
-    <com.google.android.material.button.MaterialButton
+    <com.google.android.material.chip.Chip
         android:id="@+id/themeChoose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:drawableLeft="@drawable/theme"
+        android:layout_alignParentBottom="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="100dp"
-        android:layout_alignParentBottom="true"
-        app:rippleColor="@color/blues"
-        app:strokeColor="@color/blues"
         android:background="@color/transperent"
-        android:text="Theme"
-        android:textColor="@color/White"
         android:fontFamily="@font/productsansbold"
-        android:textSize="16sp"/>
+        android:text="@string/theme"
+        android:textSize="16sp"
+        app:chipIcon="@drawable/theme"
+        app:rippleColor="@color/blues"
+        app:strokeColor="@color/blues" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/food_load"
@@ -79,20 +78,16 @@
         app:lottie_fileName="sign_up.json"
         app:lottie_loop="true" />
 
-    <com.google.android.material.button.MaterialButton
+    <com.google.android.material.chip.Chip
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_search"
-        android:drawablePadding="10dp"
-        android:fontFamily="@font/productsansbold"
         android:layout_above="@+id/themeChoose"
         android:layout_marginStart="10dp"
+        android:fontFamily="@font/productsansbold"
         android:shadowColor="@android:color/darker_gray"
         android:text="@string/continue_with_google"
-        android:textColor="@color/white"
         android:textSize="16sp"
-        android:backgroundTint="@color/transperent"
-        app:rippleColor="@color/orange_700"
+        app:chipIcon="@drawable/ic_search"
         app:strokeColor="@color/teal_700" />
 </RelativeLayout>

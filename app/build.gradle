@@ -7,7 +7,9 @@ plugins {
 android {
     namespace 'com.onesilicondiode.store'
     compileSdk 33
-
+    lintOptions {
+        disable "Instantiatable"
+    }
     defaultConfig {
         applicationId "com.onesilicondiode.store"
         minSdk 25

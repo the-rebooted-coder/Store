@@ -211,7 +211,6 @@ public class Settings extends Fragment {
         String permission = Manifest.permission.POST_NOTIFICATIONS;
         if (getContext() != null) {
             if (ContextCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getContext(), "Voila, you'll be reminded 🎉!", Toast.LENGTH_SHORT).show();
             } else if (shouldShowRequestPermissionRationale(permission)) {
                 // Permission denied previously, show rationale dialog
                 showPermissionRationaleDialog();
@@ -232,6 +231,7 @@ public class Settings extends Fragment {
                     .setPositiveButton("Continue", (dialog, which) -> {
                         vibrate();
                         requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS);
+                        Toast.makeText(getContext(), "Voila, you'll be reminded 🎉!", Toast.LENGTH_SHORT).show();
                     })
                     .setNegativeButton("No Thanks", (dialog, which) -> {
                         // Handle if the user cancels the request

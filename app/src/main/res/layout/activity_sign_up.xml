@@ -11,11 +11,11 @@
         android:id="@+id/animation_view_theme"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:visibility="invisible"
-        android:elevation="30dp"
-        app:lottie_autoPlay="false"
-        android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:elevation="30dp"
+        android:visibility="invisible"
+        app:lottie_autoPlay="false"
         app:lottie_fileName="light_mode.json"
         app:lottie_loop="false" />
 
@@ -23,53 +23,52 @@
         android:id="@+id/first_hello"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/productsansbold"
-        app:texts="@array/greetings"
-        app:timeout="2600"
         android:layout_marginStart="40dp"
         android:layout_marginTop="90dp"
+        android:fontFamily="@font/productsansbold"
         android:textAlignment="viewStart"
         android:textColor="@color/black"
-        android:textSize="34sp" />
-    
+        android:textSize="34sp"
+        app:texts="@array/greetings"
+        app:timeout="2600" />
+
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" 
+        android:layout_height="wrap_content"
         android:layout_below="@id/first_hello"
-        android:fontFamily="@font/productsans"
-        android:layout_marginTop="10dp"
-        android:textColor="#3C3C3C"
-        android:textSize="15sp"
         android:layout_marginStart="40dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="50dp"
-        android:text="@string/disclaimer"/>
+        android:fontFamily="@font/productsans"
+        android:text="@string/disclaimer"
+        android:textColor="#3C3C3C"
+        android:textSize="15sp" />
 
-    <com.google.android.material.button.MaterialButton
+    <com.google.android.material.chip.Chip
         android:id="@+id/themeChoose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:rippleColor="@color/blues"
-        app:strokeColor="@color/blues"
-        android:drawableLeft="@drawable/theme"
+        android:layout_alignParentBottom="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="100dp"
-        android:layout_alignParentBottom="true"
         android:background="@color/transperent"
-        android:text="Theme"
-        android:textColor="@color/black"
         android:fontFamily="@font/productsansbold"
-        android:textSize="16sp"/>
+        android:text="@string/theme"
+        android:textSize="16sp"
+        app:chipIcon="@drawable/theme"
+        app:rippleColor="@color/blues"
+        app:strokeColor="@color/blues" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/food_load"
         android:layout_width="124dp"
         android:layout_height="119dp"
-        android:elevation="30dp"
-        android:visibility="invisible"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:elevation="30dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -79,20 +78,16 @@
         app:lottie_fileName="sign_up.json"
         app:lottie_loop="true" />
 
-    <com.google.android.material.button.MaterialButton
+    <com.google.android.material.chip.Chip
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_search"
-        android:drawablePadding="10dp"
-        android:fontFamily="@font/productsansbold"
         android:layout_above="@+id/themeChoose"
         android:layout_marginStart="10dp"
+        android:fontFamily="@font/productsansbold"
         android:shadowColor="@android:color/darker_gray"
         android:text="@string/continue_with_google"
-        android:textColor="@color/black"
         android:textSize="16sp"
-        android:backgroundTint="#FFFFFF"
-        app:rippleColor="@color/orange_700"
+        app:chipIcon="@drawable/ic_search"
         app:strokeColor="@color/teal_700" />
 </RelativeLayout>

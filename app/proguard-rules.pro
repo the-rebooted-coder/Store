@@ -12,8 +12,10 @@
 #   public *;
 #}
 -keepclassmembers class com.onesilicondiode.store.SecureVaultModel {
-  *;
+ *;
 }
+-keep class com.gauravbhola.ripplepulsebackground.RipplePulseLayout$RippleView {
+ *; }
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable
