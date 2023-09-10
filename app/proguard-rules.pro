@@ -14,6 +14,9 @@
 -keepclassmembers class com.onesilicondiode.store.SecureVaultModel {
  *;
 }
+-keepclassmembers class com.onesilicondiode.store.JournalEntry {
+ *;
+}
 -keep class com.gauravbhola.ripplepulsebackground.RipplePulseLayout$RippleView {
  *; }
 # Uncomment this to preserve the line number information for
